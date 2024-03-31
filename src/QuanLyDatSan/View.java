@@ -11,13 +11,13 @@ public class View extends JFrame {
     private JTextField txtMaDS, txtMaKH, txtMaSan, txtMaDH, txtLoaiSan,
             txtNgayBatDau, txtNgayKetThuc, txtGioBatDau, txtGioKetThuc,
             txtSoGioThue, txtTrangThai;
-    private JButton btnAdd, btnEdit, btnDelete, btnCancel;
+    private JButton btnAdd, btnEdit, btnDelete, btnCancel, btnReload;
     private JCheckBox cbThu2, cbThu3, cbThu4, cbThu5, cbThu6, cbThu7, cbChuNhat;
     public JTable dataTable;
 
     public View() {
         setTitle("Quản lý đặt sân");
-        setSize(1200, 600);
+        setSize(1200, 700);
         setResizable(true);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -175,6 +175,11 @@ public class View extends JFrame {
         gbc.gridy = 16;
         btnCancel = new JButton("Thoát");
         inputPanel.add(btnCancel, gbc);
+        gbc.gridx = 0;
+        gbc.gridy = 17;
+        gbc.gridwidth = GridBagConstraints.REMAINDER;
+        btnReload = new JButton("Reload");
+        inputPanel.add(btnReload, gbc);
 
         // Panel chứa bảng hiển thị dữ liệu
         JPanel dataPanel = new JPanel(new BorderLayout());
@@ -314,6 +319,11 @@ public class View extends JFrame {
     // Phương thức này để thêm một trình nghe cho nút Cancel
     public void addCancelListener(ActionListener listener) {
         btnCancel.addActionListener(listener);
+    }
+
+    // Phương thức này để thêm một trình nghe cho nút Reload
+    public void addReloadListener(ActionListener listener) {
+        btnReload.addActionListener(listener);
     }
     
     // Phương thức này để cập nhật dữ liệu trong bảng từ cơ sở dữ liệu

@@ -7,8 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JOptionPane;
 
-import QuanLySanCau.SuaFrm;
-
 public class Controller {
     private Model model;
     private View view;
@@ -27,7 +25,8 @@ public class Controller {
         this.view.addDeleteListener(new DeleteListener());
         // Thêm trình nghe cho nút Cancel trên View
         this.view.addCancelListener(new CancelListener());
-        
+        // Thêm trình nghe cho nút Reload trên View
+        this.view.addReloadListener(new ReloadListener());
 
         // Kết nối đến cơ sở dữ liệu khi tạo đối tượng Controller
         connectToDatabase();
@@ -84,11 +83,6 @@ public class Controller {
             AddFrm afrm = new AddFrm();
             // Hiển thị form mới
             afrm.setVisible(true);
-            // Thực hiện các hành động khi nút Submit được nhấn (nếu cần)
-            // Ví dụ: lấy dữ liệu từ các trường nhập liệu, thêm dữ liệu vào cơ sở dữ liệu, sau đó cập nhật bảng
-            // String[] data = view.getDatsanInfo();
-            // model.addDataToDatabase(data);
-            // Sau khi thêm dữ liệu, reload lại bảng để hiển thị dữ liệu mới
             displayData();
         }
     }
@@ -114,17 +108,22 @@ public class Controller {
                     java.sql.Time gioBatDauValue = java.sql.Time.valueOf(view.dataTable.getValueAt(selectedRow, 7).toString());
                     java.sql.Time gioKetThucValue = java.sql.Time.valueOf(view.dataTable.getValueAt(selectedRow, 8).toString());
 
+                    // Giả sử cột 9 đến 15 chứa các ngày trong tuần
                     List<String> cacThuTrongTuanValue = new ArrayList<>();
                     for (int i = 9; i <= 15; i++) {
                         Object value = view.dataTable.getValueAt(selectedRow, i);
-                        if (value instanceof Boolean && (boolean) value) {
-                            cacThuTrongTuanValue.add("Thứ " + (i - 8));
+                        if (value != null && value.equals("1")) {
+                            // Xử lý khi giá trị là "1"
+                            cacThuTrongTuanValue.add("Thứ " + (i - 8)); // Ví dụ: "Thứ 2", "Thứ 3",...
                         } else {
-                            // Xử lý khi giá trị không phải là true
+                            // Xử lý khi giá trị không phải là "1"
                         }
                     }
+
+                    String trangThaiValue = view.dataTable.getValueAt(selectedRow, 17).toString();
+
                     // Khởi tạo form EditFrm với các giá trị đã chuyển đổi
-                    EditFrm editFrm = new EditFrm(maDSValue, maKHValue, maSanValue, maDHValue, loaiSanValue, ngayBatDauValue, ngayKetThucValue, gioBatDauValue, gioKetThucValue, cacThuTrongTuanValue);
+                    EditFrm editFrm = new EditFrm(maDSValue, maKHValue, maSanValue, maDHValue, loaiSanValue, ngayBatDauValue, ngayKetThucValue, gioBatDauValue, gioKetThucValue, cacThuTrongTuanValue, trangThaiValue);
                     editFrm.initComponents();
                 } catch (IllegalArgumentException ex) {
                     // Xử lý ngoại lệ nếu có
@@ -171,7 +170,18 @@ public class Controller {
     class CancelListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            // Thực hiện các hành động khi nút Cancel được nhấn (nếu cần)
+            int option = JOptionPane.showConfirmDialog(view, "Bạn có chắc chắn muốn thoát không?", "Xác nhận", JOptionPane.YES_NO_OPTION);
+            if (option == JOptionPane.YES_OPTION) {
+                view.dispose(); // Đóng cửa sổ hiện tại
+            }
+        }
+    }
+
+    // Lớp trình nghe cho nút Reload
+    class ReloadListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            displayData(); // Tải lại dữ liệu
         }
     }
 

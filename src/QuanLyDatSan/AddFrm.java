@@ -1,22 +1,16 @@
 package QuanLyDatSan;
 
-<<<<<<< HEAD
 import java.sql.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-
-=======
-import java.awt.*;
->>>>>>> e4608dd (Update AddFrm.java)
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-<<<<<<< HEAD
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
@@ -33,41 +27,16 @@ public class AddFrm extends JFrame {
             GioBatDau, GioKetThuc, SoGioThue, CacThuTrongTuan, TrangThai;
     private JButton btnSubmit, btnCancel;
     
-=======
-import javax.swing.JPanel;
-import javax.swing.JTable;
-import javax.swing.JTextField;
-
-public class AddFrm extends JFrame {
-    private JTextField txtMaDS, txtMaKH, txtMaSan, txtMaDH, txtLoaiSan,
-            txtNgayBatDau, txtNgayKetThuc, txtGioBatDau, txtGioKetThuc,
-            txtSoGioThue;
-    private JButton btnSubmit, btnCancel;
-    private JCheckBox cbThu2, cbThu3, cbThu4, cbThu5, cbThu6, cbThu7, cbChuNhat;
-    private JComboBox cmbTrangThai;
-    private JLabel MaDS, MaKH, MaSan, MaDH, LoaiSan, NgayBatDau, NgayKetThuc,
-            GioBatDau, GioKetThuc, SoGioThue, CacThuTrongTuan, TrangThai;
-
->>>>>>> e4608dd (Update AddFrm.java)
     public AddFrm() {
         setTitle("Thêm dữ liệu mới");
         setSize(400, 400);
         setResizable(false);
-<<<<<<< HEAD
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
-=======
-        setLocationRelativeTo(null);
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
->>>>>>> e4608dd (Update AddFrm.java)
 
         JPanel panel = new JPanel();
         add(panel);
 
-<<<<<<< HEAD
-=======
-        MaDS = new JLabel("Mã đặt sân:");
->>>>>>> e4608dd (Update AddFrm.java)
         MaKH = new JLabel("Mã khách hàng:");
         MaSan = new JLabel("Mã sân:");
         MaDH = new JLabel("Mã đặt hàng:");
@@ -78,7 +47,6 @@ public class AddFrm extends JFrame {
         GioKetThuc = new JLabel("Giờ kết thúc:");
         CacThuTrongTuan = new JLabel("Các thứ trong tuần:");
         TrangThai = new JLabel("Trạng thái");
-<<<<<<< HEAD
         
         txtMaKH = new JTextField(10);
         txtMaSan = new JTextField(10);
@@ -168,21 +136,6 @@ public class AddFrm extends JFrame {
                 dispose();
             }
         });
-=======
-
-        panel.setLayout(new GridLayout(0, 2));
-        panel.add(MaDS);
-        panel.add(MaKH);
-        panel.add(MaSan);
-        panel.add(MaDH);
-        panel.add(LoaiSan);
-        panel.add(NgayBatDau);
-        panel.add(NgayKetThuc);
-        panel.add(GioBatDau);
-        panel.add(GioKetThuc);
-        panel.add(CacThuTrongTuan);
-        panel.add(TrangThai);
->>>>>>> e4608dd (Update AddFrm.java)
     }
 
     // Phương thức thêm dữ liệu vào cơ sở dữ liệu
@@ -194,9 +147,20 @@ public class AddFrm extends JFrame {
     
         try (Connection conn = DriverManager.getConnection(URL, USER, PASS)) {
             // Chuẩn bị câu lệnh SQL để thêm dữ liệu vào bảng
-            String sql = "INSERT INTO danhsachdatsan (MaKH, MaSan, MaDH, LoaiSan, NgayBatDau, NgayKetThuc, GioBatDau, GioKetThuc, Thu_2, Thu_3, Thu_4, Thu_5, Thu_6, Thu_7, ChuNhat, TrangThai) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            String sql = "INSERT INTO danhsachdatsan (MaKH, MaSan, MaDH, LoaiSan, NgayBatDau, NgayKetThuc, GioBatDau, GioKetThuc, Thu_2, Thu_3, Thu_4, Thu_5, Thu_6, Thu_7, ChuNhat, TrangThai, SoGioThue) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             PreparedStatement st = conn.prepareStatement(sql);
-
+    
+            // Lấy giá trị của giờ bắt đầu và giờ kết thúc từ JSpinner
+            Timestamp gioBatDau = new Timestamp(((java.util.Date) spGioBatDau.getValue()).getTime());
+            Timestamp gioKetThuc = new Timestamp(((java.util.Date) spGioKetThuc.getValue()).getTime());
+            st.setTimestamp(7, gioBatDau);
+            st.setTimestamp(8, gioKetThuc);
+    
+            // Tính số giờ
+            long milliseconds = gioKetThuc.getTime() - gioBatDau.getTime();
+            int hours = (int) (milliseconds / (1000 * 60 * 60));
+            st.setInt(17, hours);
+    
             // Đặt giá trị cho các tham số trong câu lệnh SQL
             st.setString(1, txtMaKH.getText());
             st.setString(2, txtMaSan.getText());
@@ -204,9 +168,9 @@ public class AddFrm extends JFrame {
             st.setString(4, cmbLoaiSan.getSelectedItem().toString());
             st.setTimestamp(5, new Timestamp(((java.util.Date) spNgayBatDau.getValue()).getTime()));
             st.setTimestamp(6, new Timestamp(((java.util.Date) spNgayKetThuc.getValue()).getTime()));
-            st.setTimestamp(7, new Timestamp(((java.util.Date) spGioBatDau.getValue()).getTime()));
-            st.setTimestamp(8, new Timestamp(((java.util.Date) spGioKetThuc.getValue()).getTime()));
-        
+            st.setTimestamp(7, gioBatDau);
+            st.setTimestamp(8, gioKetThuc);
+    
             // Xử lý các ô checkbox và thiết lập giá trị cho tham số trong câu lệnh SQL
             st.setString(9, cbThu2.isSelected() ? "1" : "0");
             st.setString(10, cbThu3.isSelected() ? "1" : "0");
@@ -215,17 +179,18 @@ public class AddFrm extends JFrame {
             st.setString(13, cbThu6.isSelected() ? "1" : "0");
             st.setString(14, cbThu7.isSelected() ? "1" : "0");
             st.setString(15, cbChuNhat.isSelected() ? "1" : "0");
-        
             st.setString(16, cmbTrangThai.getSelectedItem().toString());
-        
+    
+            st.setString(16, cmbTrangThai.getSelectedItem().toString());
+    
             int rowsInserted = st.executeUpdate();
             if (rowsInserted > 0) {
-                JOptionPane.showMessageDialog(null, "Thêm dữ liệu thành công");
+                JOptionPane.showMessageDialog(null, "Thêm dữ liệu thành côn g");
             } else {
                 JOptionPane.showMessageDialog(null, "Thêm dữ liệu thất bại");
             }
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(null, "Lỗi: " + ex.getMessage());
         }
-    }    
+    }
 }
