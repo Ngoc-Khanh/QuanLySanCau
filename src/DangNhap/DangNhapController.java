@@ -1,28 +1,25 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package DangNhap;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JOptionPane;
 
-/**
- *
- * @author Krug
- */
-public class DangNhapDAO {
-    private DangNhapFrm view;
-    private DangNhap model;
+public class DangNhapController {
+    private DangNhapView view;
+    private DangNhapModel model;
     
-    public DangNhapDAO(DangNhapFrm view, DangNhap model) {
+    public DangNhapController(DangNhapView view, DangNhapModel model) {
         this.view = view;
         this.model = model;
         this.view.addDangNhapListioner(new dangNhapListioner());
         this.view.addThoatListioner(new thoatsListener());
     }
     
+    private void openIndexFrm() {
+        // Gọi form mới từ package khác
+        new MainMenu.MainMenuView().setVisible(true);
+    }
+
     class dangNhapListioner implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -31,6 +28,8 @@ public class DangNhapDAO {
             
             if (model.kiemTra(user, pass)) {
                 JOptionPane.showMessageDialog(view, "Đăng nhập thành công!");
+                view.dispose();
+                openIndexFrm();
             } else {
                 view.displaySai("Sai tài khoản hoặc mật khẩu!");
             }

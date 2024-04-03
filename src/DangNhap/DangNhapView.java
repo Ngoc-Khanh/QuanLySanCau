@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package DangNhap;
 
 import javax.swing.*;
@@ -9,16 +5,12 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-/**
- *
- * @author Krug
- */
-public class DangNhapFrm extends JFrame implements ActionListener {
+public class DangNhapView extends JFrame implements ActionListener {
     private JTextField txtUser;
     private JPasswordField txtPass;
     private JButton btnDangNhap, btnThoat;
     
-    public DangNhapFrm() {
+    public DangNhapView() {
         setTitle("Đăng nhập tài khoản");
         setSize(300, 150);
         setLocationRelativeTo(null);

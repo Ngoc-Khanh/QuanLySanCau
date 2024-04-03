@@ -1,25 +1,23 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Main.java to edit this template
- */
-package QuanLySanCau;
+package QuanLyDatSan;
 
-import java.util.Date;
+import java.sql.*;
 
-/**
- *
- * @author Krug
- */
-public class SanCau {
+public class DatSanModel {
     private int MaDS, MaKH, MaSan, MaDH;
     private String LoaiSan;
-    private Date NgayBatDau, NgayKetThuc, GioBatDau, GioKetThuc;
-    private int SoGioThue;
-    private boolean Thu_2, Thu_3, Thu_4, Thu_5, Thu_6, Thu_7, ChuNhat;
-    private float TongTienSan;
-    private boolean TrangThai;
+    private Date NgayBatDau, NgayKetThuc, GioBatDau, GioKetThuc, SoGioThue;
+    private boolean Thu_2, Thu_3, Thu_4, Thu_5, Thu_6, Thu_7, ChuNhat, TrangThai;
 
-    public SanCau(int MaDS, int MaKH, int MaSan, int MaDH, String LoaiSan, Date NgayBatDau, Date NgayKetThuc, Date GioBatDau, Date GioKetThuc, int SoGioThue, boolean Thu_2, boolean Thu_3, boolean Thu_4, boolean Thu_5, boolean Thu_6, boolean Thu_7, boolean ChuNhat, float TongTienSan, boolean TrangThai) {
+    public DatSanModel() {
+        super();
+    }
+    
+    // Constructor
+    public DatSanModel(int MaDS, int MaKH, int MaSan, int MaDH, String LoaiSan,
+            Date NgayBatDau, Date NgayKetThuc, Date GioBatDau, Date GioKetThuc,
+            Date SoGioThue, boolean Thu_2, boolean Thu_3, boolean Thu_4,
+            boolean Thu_5, boolean Thu_6, boolean Thu_7, boolean ChuNhat,
+            boolean TrangThai) {
         this.MaDS = MaDS;
         this.MaKH = MaKH;
         this.MaSan = MaSan;
@@ -37,10 +35,10 @@ public class SanCau {
         this.Thu_6 = Thu_6;
         this.Thu_7 = Thu_7;
         this.ChuNhat = ChuNhat;
-        this.TongTienSan = TongTienSan;
         this.TrangThai = TrangThai;
     }
 
+    // Getters và Setters
     public int getMaDS() {
         return MaDS;
     }
@@ -97,14 +95,6 @@ public class SanCau {
         this.NgayKetThuc = NgayKetThuc;
     }
 
-    public int getSoGioThue() {
-        return SoGioThue;
-    }
-
-    public void setSoGioThue(int SoGioThue) {
-        this.SoGioThue = SoGioThue;
-    }
-
     public Date getGioBatDau() {
         return GioBatDau;
     }
@@ -119,6 +109,14 @@ public class SanCau {
 
     public void setGioKetThuc(Date GioKetThuc) {
         this.GioKetThuc = GioKetThuc;
+    }
+
+    public Date getSoGioThue() {
+        return SoGioThue;
+    }
+
+    public void setSoGioThue(Date SoGioThue) {
+        this.SoGioThue = SoGioThue;
     }
 
     public boolean isThu_2() {
@@ -177,20 +175,11 @@ public class SanCau {
         this.ChuNhat = ChuNhat;
     }
 
-    public float getTongTienSan() {
-        return TongTienSan;
-    }
-
-    public void setTongTienSan(float TongTienSan) {
-        this.TongTienSan = TongTienSan;
-    }
-
     public boolean isTrangThai() {
         return TrangThai;
     }
 
     public void setTrangThai(boolean TrangThai) {
         this.TrangThai = TrangThai;
-    }  
+    }
 }
- 

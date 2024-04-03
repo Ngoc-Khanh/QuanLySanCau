@@ -5,15 +5,16 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.Action;
 import javax.swing.JOptionPane;
 
-public class Controller {
-    private Model model;
-    private View view;
+public class DatSanController {
+    private DatSanModel model;
+    private DatSanView view;
     private Connection conn;
     private Statement st;
 
-    public Controller(Model model, View view) {
+    public DatSanController(DatSanModel model, DatSanView view) {
         this.model = model;
         this.view = view;
 
@@ -21,6 +22,8 @@ public class Controller {
         this.view.addAddListener(new AddListener());
         // Thêm trình nghe cho nút Edit trên View
         this.view.addEditListener(new EditListener());
+        // Thêm trình nghe cho nút Save trên View
+        this.view.addSaveListener(new SaveListener());
         // Thêm trình nghe cho nút Delete trên View
         this.view.addDeleteListener(new DeleteListener());
         // Thêm trình nghe cho nút Cancel trên View
@@ -67,7 +70,7 @@ public class Controller {
     private ResultSet getDataFromDatabase() {
         ResultSet rs = null;
         try {
-            String query = "SELECT * FROM danhsachdatsan"; // Thay đổi thành tên bảng của bạn
+            String query = "SELECT * FROM danhsachdatsan";
             rs = st.executeQuery(query);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -80,11 +83,66 @@ public class Controller {
         @Override
         public void actionPerformed(ActionEvent e) {
             // Tạo một instance của lớp AddForm mới
-            AddFrm afrm = new AddFrm();
+            DatSanAddFrm afrm = new DatSanAddFrm();
             // Hiển thị form mới
             afrm.setVisible(true);
             displayData();
         }
+    }
+
+    private void lockFields() {
+        view.txtMaKH.setEditable(false);
+        view.txtMaSan.setEditable(false);
+        view.txtMaDH.setEditable(false);
+        view.cmbLoaiSan.setEnabled(false);
+        view.spNgayBatDau.setEnabled(false);
+        view.spNgayKetThuc.setEnabled(false);
+        view.spGioBatDau.setEnabled(false);
+        view.spGioKetThuc.setEnabled(false);
+        view.cmbTrangThai.setEnabled(false);
+        view.cbThu2.setEnabled(false);
+        view.cbThu3.setEnabled(false);
+        view.cbThu4.setEnabled(false);
+        view.cbThu5.setEnabled(false);
+        view.cbThu6.setEnabled(false);
+        view.cbThu7.setEnabled(false);
+
+        view.btnAdd.setEnabled(true);
+        view.btnEdit.setEnabled(true);
+        view.btnDelete.setEnabled(true);
+        view.btnSave.setEnabled(false);
+        view.btnCancel.setEnabled(false);
+        view.btnReload.setEnabled(true);
+    }
+    
+    private void unlockFields() {
+        view.txtMaKH.setEditable(true);
+        view.txtMaSan.setEditable(true);
+        view.txtMaDH.setEditable(true);
+        view.cmbLoaiSan.setEnabled(true);
+        view.spNgayBatDau.setEnabled(true);
+        view.spNgayKetThuc.setEnabled(true);
+        view.spGioBatDau.setEnabled(true);
+        view.spGioKetThuc.setEnabled(true);
+        view.cmbTrangThai.setEnabled(true);
+        view.cbThu2.setEnabled(true);
+        view.cbThu3.setEnabled(true);
+        view.cbThu4.setEnabled(true);
+        view.cbThu5.setEnabled(true);
+        view.cbThu6.setEnabled(true);
+        view.cbThu7.setEnabled(true);
+        view.cbChuNhat.setEnabled(true);
+
+        view.btnAdd.setEnabled(false);
+        view.btnEdit.setEnabled(false);
+        view.btnDelete.setEnabled(false);
+        view.btnSave.setEnabled(true);
+        view.btnCancel.setEnabled(true);
+        view.btnReload.setEnabled(true);
+    }     
+
+    private void editData(String maDS) {
+        unlockFields();
     }
 
     // Lớp trình nghe cho nút Edit
@@ -93,45 +151,65 @@ public class Controller {
         public void actionPerformed(ActionEvent e) {
             int selectedRow = view.dataTable.getSelectedRow();
             if (selectedRow != -1) {
-                try {
-                    String maDSValue = view.dataTable.getValueAt(selectedRow, 0).toString();
-                    String maKHValue = view.dataTable.getValueAt(selectedRow, 1).toString();
-                    String maSanValue = view.dataTable.getValueAt(selectedRow, 2).toString();
-                    String maDHValue = view.dataTable.getValueAt(selectedRow, 3).toString();
-                    String loaiSanValue = view.dataTable.getValueAt(selectedRow, 4).toString();
-                    
-                    // Chuyển đổi từ String sang java.sql.Date
-                    java.sql.Date ngayBatDauValue = java.sql.Date.valueOf(view.dataTable.getValueAt(selectedRow, 5).toString());
-                    java.sql.Date ngayKetThucValue = java.sql.Date.valueOf(view.dataTable.getValueAt(selectedRow, 6).toString());
-                    
-                    // Chuyển đổi từ String sang java.sql.Time (nếu cần)
-                    java.sql.Time gioBatDauValue = java.sql.Time.valueOf(view.dataTable.getValueAt(selectedRow, 7).toString());
-                    java.sql.Time gioKetThucValue = java.sql.Time.valueOf(view.dataTable.getValueAt(selectedRow, 8).toString());
-
-                    // Giả sử cột 9 đến 15 chứa các ngày trong tuần
-                    List<String> cacThuTrongTuanValue = new ArrayList<>();
-                    for (int i = 9; i <= 15; i++) {
-                        Object value = view.dataTable.getValueAt(selectedRow, i);
-                        if (value != null && value.equals("1")) {
-                            // Xử lý khi giá trị là "1"
-                            cacThuTrongTuanValue.add("Thứ " + (i - 8)); // Ví dụ: "Thứ 2", "Thứ 3",...
-                        } else {
-                            // Xử lý khi giá trị không phải là "1"
-                        }
-                    }
-
-                    String trangThaiValue = view.dataTable.getValueAt(selectedRow, 17).toString();
-
-                    // Khởi tạo form EditFrm với các giá trị đã chuyển đổi
-                    EditFrm editFrm = new EditFrm(maDSValue, maKHValue, maSanValue, maDHValue, loaiSanValue, ngayBatDauValue, ngayKetThucValue, gioBatDauValue, gioKetThucValue, cacThuTrongTuanValue, trangThaiValue);
-                    editFrm.initComponents();
-                } catch (IllegalArgumentException ex) {
-                    // Xử lý ngoại lệ nếu có
-                    JOptionPane.showMessageDialog(view, "Định dạng ngày tháng không hợp lệ.", "Lỗi", JOptionPane.ERROR_MESSAGE);
-                    ex.printStackTrace();
-                }
+                String maDS = (String) view.dataTable.getValueAt(selectedRow, 0);
+                editData(maDS);
+                displayData();
             } else {
-                JOptionPane.showMessageDialog(view, "Vui lòng chọn một hàng để sửa đổi.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(view, "Vui lòng chọn một bản ghi để sửa.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
+
+    private void saveData(String maDS) {
+        String query = "UPDATE danhsachdatsan SET MaKH = ?, MaSan = ?, MaDH = ?, LoaiSan = ?, NgayBatDau = ?, NgayKetThuc = ?, GioBatDau = ?, GioKetThuc = ?, Thu_2 = ?, Thu_3 = ?, Thu_4 = ?, Thu_5 = ?, Thu_6 = ?, Thu_7 = ?, ChuNhat = ?, TrangThai = ?, SoGioThue = ? WHERE MaDS = ?";
+        try {
+            PreparedStatement st = conn.prepareStatement(query);
+            st.setString(1, view.txtMaKH.getText());
+            st.setString(2, view.txtMaSan.getText());
+            st.setString(3, view.txtMaDH.getText());
+            st.setString(4, view.cmbLoaiSan.getSelectedItem().toString());
+            st.setTimestamp(5, new Timestamp(((java.util.Date) view.spNgayBatDau.getValue()).getTime()));
+            st.setTimestamp(6, new Timestamp(((java.util.Date) view.spNgayKetThuc.getValue()).getTime()));
+            st.setObject(7, view.spGioBatDau.getValue());
+            st.setObject(8, view.spGioKetThuc.getValue());
+            st.setString(9, view.cbThu2.isSelected() ? "1" : "0");
+            st.setString(10, view.cbThu3.isSelected() ? "1" : "0");
+            st.setString(11, view.cbThu4.isSelected() ? "1" : "0");
+            st.setString(12, view.cbThu5.isSelected() ? "1" : "0");
+            st.setString(13, view.cbThu6.isSelected() ? "1" : "0");
+            st.setString(14, view.cbThu7.isSelected() ? "1" : "0");
+            st.setString(15, view.cbChuNhat.isSelected() ? "1" : "0");
+            st.setString(16, view.cmbTrangThai.getSelectedItem().toString());
+
+            // Tính số giờ
+            long milliseconds = ((java.util.Date) view.spGioKetThuc.getValue()).getTime() - ((java.util.Date) view.spGioBatDau.getValue()).getTime();
+            int hours = (int) (milliseconds / (1000 * 60 * 60));
+            st.setInt(17, hours);
+
+            st.setString(18, maDS);
+            st.executeUpdate();
+            int rowsUpdated = st.executeUpdate();
+            if (rowsUpdated > 0) {
+                JOptionPane.showMessageDialog(null, "Sửa dữ liệu thành công");
+                lockFields();
+            } else {
+                JOptionPane.showMessageDialog(null, "Sửa dữ liệu thất bại");
+            }
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, "Lỗi: " + ex.getMessage());
+        }
+    }
+
+    class SaveListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            int selectedRow = view.dataTable.getSelectedRow();
+            if (selectedRow != -1) {
+                String maDS = (String) view.dataTable.getValueAt(selectedRow, 0);
+                saveData(maDS);
+                displayData();
+            } else {
+                JOptionPane.showMessageDialog(view, "Lựa chọn hàng cần sửa", "Lỗi", JOptionPane.ERROR_MESSAGE);
             }
         }
     }
@@ -160,8 +238,7 @@ public class Controller {
                     displayData(); // Làm mới bảng
                 }
             } else {
-                JOptionPane.showMessageDialog(view, "Vui lòng chọn một bản ghi để xóa.", 
-                        "Lỗi", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(view, "Vui lòng chọn một bản ghi để xóa.", "Lỗi", JOptionPane.ERROR_MESSAGE);
             }
         }
     }
@@ -170,9 +247,9 @@ public class Controller {
     class CancelListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            int option = JOptionPane.showConfirmDialog(view, "Bạn có chắc chắn muốn thoát không?", "Xác nhận", JOptionPane.YES_NO_OPTION);
+            int option = JOptionPane.showConfirmDialog(view, "Bạn có chắc chắn muốn hủy không?", "Xác nhận", JOptionPane.YES_NO_OPTION);
             if (option == JOptionPane.YES_OPTION) {
-                view.dispose(); // Đóng cửa sổ hiện tại
+                lockFields(); // Mở khóa các TextField và checkbox trước khi thoát
             }
         }
     }
@@ -209,9 +286,9 @@ public class Controller {
     }
 
     public static void main(String[] args) {
-        Model model = new Model();
-        View view = new View();
-        Controller controller = new Controller(model, view);
-        view.setVisible(true);// Hiển thị form
+        DatSanModel model = new DatSanModel(); // Create an instance of the Model class
+        DatSanView view = new DatSanView();
+        DatSanController controller = new DatSanController(model, view);
+        view.setVisible(true);
     }
 }

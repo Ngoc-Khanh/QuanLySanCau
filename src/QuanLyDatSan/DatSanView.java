@@ -2,20 +2,26 @@ package QuanLyDatSan;
 
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 
-public class View extends JFrame {
-    private JTextField txtMaDS, txtMaKH, txtMaSan, txtMaDH, txtLoaiSan,
-            txtNgayBatDau, txtNgayKetThuc, txtGioBatDau, txtGioKetThuc,
-            txtSoGioThue, txtTrangThai;
-    private JButton btnAdd, btnEdit, btnDelete, btnCancel, btnReload;
-    private JCheckBox cbThu2, cbThu3, cbThu4, cbThu5, cbThu6, cbThu7, cbChuNhat;
+public class DatSanView extends JFrame {
+    public JTextField txtMaDS, txtMaKH, txtMaSan, txtMaDH, txtSoGioThue;
+    public JSpinner spNgayBatDau, spNgayKetThuc, spGioBatDau, spGioKetThuc;
+    public SpinnerDateModel dateModelBatDau, dateModelKetThuc, timeModelBatDau, timeModelKetThuc;
+    public JCheckBox cbThu2, cbThu3, cbThu4, cbThu5, cbThu6, cbThu7, cbChuNhat;
+    public JComboBox<String> cmbTrangThai, cmbLoaiSan;
+    public JButton btnAdd, btnEdit, btnDelete, btnCancel, btnReload, btnSave;
     public JTable dataTable;
 
-    public View() {
+    public DatSanView() {
         setTitle("Quản lý đặt sân");
         setSize(1200, 700);
         setResizable(true);
@@ -68,46 +74,61 @@ public class View extends JFrame {
         gbc.gridx = 0;
         gbc.gridy = 4;
         inputPanel.add(new JLabel("Loại Sân:"), gbc);
-        txtLoaiSan = new JTextField(10);
+        cmbLoaiSan = new JComboBox<>(new String[] {"VIP", "SVIP", "SSVIP"});
         gbc.gridx = 1;
         gbc.gridy = 4;
-        inputPanel.add(txtLoaiSan, gbc);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        inputPanel.add(cmbLoaiSan, gbc);
 
         // Label và TextField cho Ngày Bắt Đầu
         gbc.gridx = 0;
         gbc.gridy = 5;
         inputPanel.add(new JLabel("Ngày Bắt Đầu:"), gbc);
-        txtNgayBatDau = new JTextField(10);
+        dateModelBatDau = new SpinnerDateModel();
+        dateModelBatDau.setCalendarField(Calendar.DAY_OF_MONTH);
+        spNgayBatDau = new JSpinner(dateModelBatDau);
+        spNgayBatDau.setEditor(new JSpinner.DateEditor(spNgayBatDau, "dd/MM/yyyy"));
         gbc.gridx = 1;
         gbc.gridy = 5;
-        inputPanel.add(txtNgayBatDau, gbc);
+        inputPanel.add(spNgayBatDau, gbc);
 
         // Label và TextField cho Ngày Kết Thúc
         gbc.gridx = 0;
         gbc.gridy = 6;
         inputPanel.add(new JLabel("Ngày Kết Thúc:"), gbc);
-        txtNgayKetThuc = new JTextField(10);
+        dateModelKetThuc = new SpinnerDateModel();
+        dateModelKetThuc.setCalendarField(Calendar.DAY_OF_MONTH);
+        spNgayKetThuc = new JSpinner(dateModelKetThuc);
+        spNgayKetThuc.setEditor(new JSpinner.DateEditor(spNgayKetThuc, "dd/MM/yyyy"));
         gbc.gridx = 1;
         gbc.gridy = 6;
-        inputPanel.add(txtNgayKetThuc, gbc);
+        inputPanel.add(spNgayKetThuc, gbc);
 
         // Label và TextField cho Giờ Bắt Đầu
         gbc.gridx = 0;
         gbc.gridy = 7;
         inputPanel.add(new JLabel("Giờ Bắt Đầu:"), gbc);
-        txtGioBatDau = new JTextField(10);
+        timeModelBatDau = new SpinnerDateModel();
+        timeModelBatDau.setCalendarField(Calendar.MINUTE); // Set the calendar field to MINUTE
+        spGioBatDau = new JSpinner(timeModelBatDau);
+        JSpinner.DateEditor gioBatDau = new JSpinner.DateEditor(spGioBatDau, "HH:mm");
+        spGioBatDau.setEditor(gioBatDau);
         gbc.gridx = 1;
         gbc.gridy = 7;
-        inputPanel.add(txtGioBatDau, gbc);
+        inputPanel.add(spGioBatDau, gbc);
 
         // Label và TextField cho Giờ Kết Thúc
         gbc.gridx = 0;
         gbc.gridy = 8;
         inputPanel.add(new JLabel("Giờ Kết Thúc:"), gbc);
-        txtGioKetThuc = new JTextField(10);
+        timeModelKetThuc = new SpinnerDateModel();
+        timeModelKetThuc.setCalendarField(Calendar.MINUTE); // Set the calendar field to MINUTE
+        spGioKetThuc = new JSpinner(timeModelKetThuc);
+        JSpinner.DateEditor gioKetThuc = new JSpinner.DateEditor(spGioKetThuc, "HH:mm");
+        spGioKetThuc.setEditor(gioKetThuc);
         gbc.gridx = 1;
         gbc.gridy = 8;
-        inputPanel.add(txtGioKetThuc, gbc);
+        inputPanel.add(spGioKetThuc, gbc);
 
         // Label và TextField cho Số Giờ Thuê
         gbc.gridx = 0;
@@ -122,10 +143,11 @@ public class View extends JFrame {
         gbc.gridx = 0;
         gbc.gridy = 10;
         inputPanel.add(new JLabel("Trạng thái"), gbc);
-        txtTrangThai = new JTextField(10);
+        cmbTrangThai = new JComboBox<>(new String[] {"0", "1"});
         gbc.gridx = 1;
         gbc.gridy = 10;
-        inputPanel.add(txtTrangThai, gbc);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        inputPanel.add(cmbTrangThai, gbc);
         
         // Thêm checkbox
         gbc.gridx = 0;
@@ -165,17 +187,21 @@ public class View extends JFrame {
         inputPanel.add(btnAdd, gbc);
         gbc.gridx = 1;
         gbc.gridy = 15;
-        btnEdit = new JButton("Sửa");
-        inputPanel.add(btnEdit, gbc);
-        gbc.gridx = 0;
-        gbc.gridy = 16;
         btnDelete = new JButton("Xóa");
         inputPanel.add(btnDelete, gbc);
+        gbc.gridx = 0;
+        gbc.gridy = 16;
+        btnEdit = new JButton("Sửa");
+        inputPanel.add(btnEdit, gbc);
         gbc.gridx = 1;
         gbc.gridy = 16;
-        btnCancel = new JButton("Thoát");
-        inputPanel.add(btnCancel, gbc);
+        btnSave = new JButton("Lưu");
+        inputPanel.add(btnSave, gbc);
         gbc.gridx = 0;
+        gbc.gridy = 17;
+        btnCancel = new JButton("Hủy");
+        inputPanel.add(btnCancel, gbc);
+        gbc.gridx = 1;
         gbc.gridy = 17;
         gbc.gridwidth = GridBagConstraints.REMAINDER;
         btnReload = new JButton("Reload");
@@ -203,13 +229,13 @@ public class View extends JFrame {
         txtMaKH.setEditable(false);
         txtMaSan.setEditable(false);
         txtMaDH.setEditable(false);
-        txtLoaiSan.setEditable(false);
-        txtNgayBatDau.setEditable(false);
-        txtNgayKetThuc.setEditable(false);
-        txtGioBatDau.setEditable(false);
-        txtGioKetThuc.setEditable(false);
+        cmbLoaiSan.setEnabled(false);
+        spNgayBatDau.setEnabled(false);
+        spNgayKetThuc.setEnabled(false);
+        spGioBatDau.setEnabled(false);
+        spGioKetThuc.setEnabled(false);
         txtSoGioThue.setEditable(false);
-        txtTrangThai.setEditable(false);
+        cmbTrangThai.setEnabled(false);
         cbThu2.setEnabled(false);
         cbThu3.setEnabled(false);
         cbThu4.setEnabled(false);
@@ -217,7 +243,10 @@ public class View extends JFrame {
         cbThu6.setEnabled(false);
         cbThu7.setEnabled(false);
         cbChuNhat.setEnabled(false);
-       
+
+        btnSave.setEnabled(false);
+        btnCancel.setEnabled(false);
+
         add(mainPanel);
         setVisible(true);
         
@@ -231,14 +260,14 @@ public class View extends JFrame {
                         txtMaKH.setText((String) dataTable.getValueAt(selectedRow, 1));
                         txtMaSan.setText((String) dataTable.getValueAt(selectedRow, 2));
                         txtMaDH.setText((String) dataTable.getValueAt(selectedRow, 3));
-                        txtLoaiSan.setText((String) dataTable.getValueAt(selectedRow, 4));
-                        txtNgayBatDau.setText((String) dataTable.getValueAt(selectedRow, 5));
-                        txtNgayKetThuc.setText((String) dataTable.getValueAt(selectedRow, 6));
-                        txtGioBatDau.setText((String) dataTable.getValueAt(selectedRow, 7));
-                        txtGioKetThuc.setText((String) dataTable.getValueAt(selectedRow, 8));
-//                        txtSoGioThue.setText((String) dataTable.getValueAt(selectedRow, 9));
+                        cmbLoaiSan.setSelectedItem((String) dataTable.getValueAt(selectedRow, 4));
+                        spNgayBatDau.setValue(convertStringToDate((String) dataTable.getValueAt(selectedRow, 5)));
+                        spNgayKetThuc.setValue(convertStringToDate((String) dataTable.getValueAt(selectedRow, 6)));
+                        spGioBatDau.setValue(convertStringToTime((String) dataTable.getValueAt(selectedRow, 7)));
+                        spGioKetThuc.setValue(convertStringToTime((String) dataTable.getValueAt(selectedRow, 8)));
+
                         txtSoGioThue.setText(calculateSoGioThue(selectedRow));
-                        txtTrangThai.setText(convertTrangThai((String) dataTable.getValueAt(selectedRow, 17)));
+                        cmbTrangThai.setSelectedItem((String) dataTable.getValueAt(selectedRow, 17));
                         
                         cbThu2.setSelected(dataTable.getValueAt(selectedRow, 10).equals("1"));
                         cbThu3.setSelected(dataTable.getValueAt(selectedRow, 11).equals("1"));
@@ -284,11 +313,11 @@ public class View extends JFrame {
         info[1] = txtMaKH.getText();
         info[2] = txtMaSan.getText();
         info[3] = txtMaDH.getText();
-        info[4] = txtLoaiSan.getText();
-        info[5] = txtNgayBatDau.getText();
-        info[6] = txtNgayKetThuc.getText();
-        info[7] = txtGioBatDau.getText();
-        info[8] = txtGioKetThuc.getText();
+        info[4] = (String) cmbLoaiSan.getSelectedItem();
+        info[5] = spNgayBatDau.getValue().toString();
+        info[6] = spNgayKetThuc.getValue().toString();
+        info[7] = spGioBatDau.getValue().toString();
+        info[8] = spGioKetThuc.getValue().toString();
         info[9] = txtSoGioThue.getText();
         info[10] = String.valueOf(cbThu2.isSelected());
         info[11] = String.valueOf(cbThu3.isSelected());
@@ -297,7 +326,7 @@ public class View extends JFrame {
         info[14] = String.valueOf(cbThu6.isSelected());
         info[15] = String.valueOf(cbThu7.isSelected());
         info[16] = String.valueOf(cbChuNhat.isSelected());
-        info[17] = txtTrangThai.getText();
+        info[17] = (String) cmbTrangThai.getSelectedItem();
         return info;
     }
 
@@ -309,6 +338,11 @@ public class View extends JFrame {
     // Phương thức này để thêm một trình nghe cho nút Edit
     public void addEditListener(ActionListener listener) {
         btnEdit.addActionListener(listener);
+    }
+        
+    // Phương thức này để thêm một trình nghe cho nút Save
+    public void addSaveListener(ActionListener listener) {
+        btnSave.addActionListener(listener);
     }
 
     // Phương thức này để thêm một trình nghe cho nút Delete
@@ -334,15 +368,29 @@ public class View extends JFrame {
             model.addRow(row); // Thêm dữ liệu mới vào bảng
         }
     }
-    
-    private String convertTrangThai(String value) {
-        if (value != null) {
-            return value.equals("1") ? "Còn" : "Hết";
+
+    private Date convertStringToDate(String dateString) {
+        try {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            return dateFormat.parse(dateString);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return null;
         }
-        return ""; // hoặc bạn có thể trả về một giá trị mặc định khác nếu cần
     }
 
+    private Date convertStringToTime(String timeString) {
+        try {
+            SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
+            return timeFormat.parse(timeString);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new View());
+        SwingUtilities.invokeLater(() -> new DatSanView());
     }
 }

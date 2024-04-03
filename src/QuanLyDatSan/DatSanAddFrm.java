@@ -4,8 +4,6 @@ import java.sql.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -17,7 +15,7 @@ import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.SpinnerDateModel;
 
-public class AddFrm extends JFrame {
+public class DatSanAddFrm extends JFrame {
     private JTextField txtMaKH, txtMaSan, txtMaDH, txtSoGioThue;
     private JSpinner spNgayBatDau, spNgayKetThuc, spGioBatDau, spGioKetThuc;
     private SpinnerDateModel dateModelBatDau, dateModelKetThuc, timeModelBatDau, timeModelKetThuc;
@@ -27,7 +25,7 @@ public class AddFrm extends JFrame {
             GioBatDau, GioKetThuc, SoGioThue, CacThuTrongTuan, TrangThai;
     private JButton btnSubmit, btnCancel;
     
-    public AddFrm() {
+    public DatSanAddFrm() {
         setTitle("Thêm dữ liệu mới");
         setSize(400, 400);
         setResizable(false);
@@ -147,16 +145,17 @@ public class AddFrm extends JFrame {
     
         try (Connection conn = DriverManager.getConnection(URL, USER, PASS)) {
             // Chuẩn bị câu lệnh SQL để thêm dữ liệu vào bảng
-            String sql = "INSERT INTO danhsachdatsan (MaKH, MaSan, MaDH, LoaiSan, NgayBatDau, NgayKetThuc, GioBatDau, GioKetThuc, Thu_2, Thu_3, Thu_4, Thu_5, Thu_6, Thu_7, ChuNhat, TrangThai, SoGioThue) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-            PreparedStatement st = conn.prepareStatement(sql);
+            String querry = "INSERT INTO danhsachdatsan (MaKH, MaSan, MaDH, LoaiSan, NgayBatDau, NgayKetThuc, GioBatDau, GioKetThuc, Thu_2, Thu_3, Thu_4, Thu_5, Thu_6, Thu_7, ChuNhat, TrangThai, SoGioThue) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            PreparedStatement st = conn.prepareStatement(querry);
     
             // Lấy giá trị của giờ bắt đầu và giờ kết thúc từ JSpinner
             Timestamp gioBatDau = new Timestamp(((java.util.Date) spGioBatDau.getValue()).getTime());
             Timestamp gioKetThuc = new Timestamp(((java.util.Date) spGioKetThuc.getValue()).getTime());
+
             st.setTimestamp(7, gioBatDau);
             st.setTimestamp(8, gioKetThuc);
-    
-            // Tính số giờ
+
+            // Tính số giờ nếu giờ kết thúc lớn hơn giờ bắt đầu
             long milliseconds = gioKetThuc.getTime() - gioBatDau.getTime();
             int hours = (int) (milliseconds / (1000 * 60 * 60));
             st.setInt(17, hours);
@@ -168,8 +167,8 @@ public class AddFrm extends JFrame {
             st.setString(4, cmbLoaiSan.getSelectedItem().toString());
             st.setTimestamp(5, new Timestamp(((java.util.Date) spNgayBatDau.getValue()).getTime()));
             st.setTimestamp(6, new Timestamp(((java.util.Date) spNgayKetThuc.getValue()).getTime()));
-            st.setTimestamp(7, gioBatDau);
-            st.setTimestamp(8, gioKetThuc);
+            st.setObject(7, spGioBatDau.getValue());
+            st.setObject(8, spGioKetThuc.getValue());
     
             // Xử lý các ô checkbox và thiết lập giá trị cho tham số trong câu lệnh SQL
             st.setString(9, cbThu2.isSelected() ? "1" : "0");
@@ -179,13 +178,12 @@ public class AddFrm extends JFrame {
             st.setString(13, cbThu6.isSelected() ? "1" : "0");
             st.setString(14, cbThu7.isSelected() ? "1" : "0");
             st.setString(15, cbChuNhat.isSelected() ? "1" : "0");
-            st.setString(16, cmbTrangThai.getSelectedItem().toString());
-    
+
             st.setString(16, cmbTrangThai.getSelectedItem().toString());
     
             int rowsInserted = st.executeUpdate();
             if (rowsInserted > 0) {
-                JOptionPane.showMessageDialog(null, "Thêm dữ liệu thành côn g");
+                JOptionPane.showMessageDialog(null, "Thêm dữ liệu thành công");
             } else {
                 JOptionPane.showMessageDialog(null, "Thêm dữ liệu thất bại");
             }

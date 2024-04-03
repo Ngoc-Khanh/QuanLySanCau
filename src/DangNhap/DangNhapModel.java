@@ -1,18 +1,10 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package DangNhap;
 
-/**
- *
- * @author Krug
- */
-public class DangNhap {
+public class DangNhapModel {
     private String userName;
     private String passWord;
     
-    public DangNhap() { }
+    public DangNhapModel() { }
 
     public String getUserName() {
         return userName;
@@ -32,5 +24,13 @@ public class DangNhap {
     
     public boolean kiemTra(String userName, String passWord) {
         return "admin".equals(userName) && "admin".equals(passWord);
+    }
+
+    public class index {
+
+        public void setVisible(boolean b) {
+            // TODO Auto-generated method stub
+            throw new UnsupportedOperationException("Unimplemented method 'setVisible'");
+        }
     }
 }
