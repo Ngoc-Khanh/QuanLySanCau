@@ -6,11 +6,12 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
+
+import QuanLyDatSan.DatSanController.ExcelListener;
 
 public class DatSanView extends JFrame {
     public JTextField txtMaDS, txtMaKH, txtMaSan, txtMaDH, txtSoGioThue;
@@ -18,7 +19,7 @@ public class DatSanView extends JFrame {
     public SpinnerDateModel dateModelBatDau, dateModelKetThuc, timeModelBatDau, timeModelKetThuc;
     public JCheckBox cbThu2, cbThu3, cbThu4, cbThu5, cbThu6, cbThu7, cbChuNhat;
     public JComboBox<String> cmbTrangThai, cmbLoaiSan;
-    public JButton btnAdd, btnEdit, btnDelete, btnCancel, btnReload, btnSave;
+    public JButton btnAdd, btnEdit, btnDelete, btnCancel, btnReload, btnSave, btnExcel;
     public JTable dataTable;
 
     public DatSanView() {
@@ -26,7 +27,7 @@ public class DatSanView extends JFrame {
         setSize(1200, 700);
         setResizable(true);
         setLocationRelativeTo(null);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
         // Panel chứa các thành phần nhập liệu
         JPanel inputPanel = new JPanel(new GridBagLayout());
@@ -203,6 +204,10 @@ public class DatSanView extends JFrame {
         inputPanel.add(btnCancel, gbc);
         gbc.gridx = 1;
         gbc.gridy = 17;
+        btnExcel = new JButton("Excel");
+        inputPanel.add(btnExcel, gbc);
+        gbc.gridx = 0;
+        gbc.gridy = 18;
         gbc.gridwidth = GridBagConstraints.REMAINDER;
         btnReload = new JButton("Reload");
         inputPanel.add(btnReload, gbc);
@@ -354,6 +359,11 @@ public class DatSanView extends JFrame {
     public void addCancelListener(ActionListener listener) {
         btnCancel.addActionListener(listener);
     }
+
+    // Phương thức này để thêm một trình nghe cho nút Cancel
+    public void addExcelListener(ActionListener listener) {
+        btnExcel.addActionListener(listener);
+    } 
 
     // Phương thức này để thêm một trình nghe cho nút Reload
     public void addReloadListener(ActionListener listener) {

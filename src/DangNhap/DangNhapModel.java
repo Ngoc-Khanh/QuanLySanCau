@@ -23,7 +23,7 @@ public class DangNhapModel {
     }
     
     public boolean kiemTra(String userName, String passWord) {
-        return "admin".equals(userName) && "admin".equals(passWord);
+        return "admin".equals(userName) && "1".equals(passWord);
     }
 
     public class index {

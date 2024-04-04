@@ -3,10 +3,17 @@ package QuanLyDatSan;
 import java.sql.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.Action;
 import javax.swing.JOptionPane;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class DatSanController {
     private DatSanModel model;
@@ -28,6 +35,8 @@ public class DatSanController {
         this.view.addDeleteListener(new DeleteListener());
         // Thêm trình nghe cho nút Cancel trên View
         this.view.addCancelListener(new CancelListener());
+        // Thêm trình nghe cho nút Excel  trên view
+        this.view.addExcelListener(new ExcelListener());
         // Thêm trình nghe cho nút Reload trên View
         this.view.addReloadListener(new ReloadListener());
 
@@ -243,6 +252,99 @@ public class DatSanController {
         }
     }
 
+    // Lớp trình nghe cho nút Excel
+    class ExcelListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            XSSFWorkbook workbook = new XSSFWorkbook();
+            XSSFSheet sheet = workbook.createSheet("Danh sach dat hang");
+            XSSFRow row = null;
+            Cell cell = null;
+
+            row = sheet.createRow(0);
+
+            cell = row.createCell(0, CellType.STRING);
+            cell.setCellValue("Mã đặt sân");
+
+            cell = row.createCell(1, CellType.STRING);
+            cell.setCellValue("Mã khách hàng");
+
+            cell = row.createCell(2, CellType.STRING);
+            cell.setCellValue("Mã sân");
+
+            cell = row.createCell(3, CellType.STRING);
+            cell.setCellValue("Mã đặt hàng");
+
+            cell = row.createCell(4, CellType.STRING);
+            cell.setCellValue("Loại sân");
+
+            cell = row.createCell(5, CellType.STRING);
+            cell.setCellValue("Ngày bắt đầu");
+            
+            cell = row.createCell(6, CellType.STRING);
+            cell.setCellValue("Ngày kết thúc");
+            
+            cell = row.createCell(7, CellType.STRING);
+            cell.setCellValue("Giờ bắt đầu");
+            
+            cell = row.createCell(8, CellType.STRING);
+            cell.setCellValue("Giờ kết thúc");
+            
+            cell = row.createCell(9, CellType.STRING);
+            cell.setCellValue("Số giờ thuê");
+            
+            cell = row.createCell(10, CellType.STRING);
+            cell.setCellValue("Thứ 2");
+            
+            cell = row.createCell(11, CellType.STRING);
+            cell.setCellValue("Thứ 3");
+            
+            cell = row.createCell(12, CellType.STRING);
+            cell.setCellValue("Thứ 4");
+            
+            cell = row.createCell(13, CellType.STRING);
+            cell.setCellValue("Thứ 5");
+
+            cell = row.createCell(14, CellType.STRING);
+            cell.setCellValue("Thứ 6");
+            
+            cell = row.createCell(15, CellType.STRING);
+            cell.setCellValue("Thứ 7");
+
+            cell = row.createCell(16, CellType.STRING);
+            cell.setCellValue("Chủ nhật");
+            
+            cell = row.createCell(17, CellType.STRING);
+            cell.setCellValue("Trạng thái");
+            
+            int rowCount = view.dataTable.getRowCount(); // Lấy số lượng hàng trên bảng
+            int columnCount = view.dataTable.getColumnCount(); // Lấy số lượng cột trên bảng
+    
+            // Lặp qua từng hàng của bảng
+            for (int i = 0; i < rowCount; i++) {
+                row = sheet.createRow(i + 1); // Bắt đầu từ hàng 1, vì hàng 0 đã được sử dụng cho tiêu đề
+    
+                // Lặp qua từng cột của hàng và thêm dữ liệu vào file Excel
+                for (int j = 0; j < columnCount; j++) {
+                    Object value = view.dataTable.getValueAt(i, j); // Lấy giá trị của ô tại hàng i, cột j
+                    if (value != null) {
+                        cell = row.createCell(j, CellType.STRING);
+                        cell.setCellValue(value.toString());
+                    }
+                }
+            }
+
+            try (FileOutputStream fos = new FileOutputStream("D://danhsachdatsan.xlsx")) {
+                workbook.write(fos);
+                JOptionPane.showMessageDialog(null, "Excel Success!.File path: D://danhsachdatsan.xlsx");
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(null, "An error occurred while exporting to Excel.");
+            }
+        }
+    }
+
+
     // Lớp trình nghe cho nút Cancel
     class CancelListener implements ActionListener {
         @Override
@@ -283,12 +385,5 @@ public class DatSanController {
         dataList.toArray(data);
 
         return data;
-    }
-
-    public static void main(String[] args) {
-        DatSanModel model = new DatSanModel(); // Create an instance of the Model class
-        DatSanView view = new DatSanView();
-        DatSanController controller = new DatSanController(model, view);
-        view.setVisible(true);
     }
 }

@@ -42,4 +42,11 @@ public class DangNhapController {
             System.exit(0);
         }    
     }
+
+    public static void main(String[] args) {
+        DangNhapView view = new DangNhapView();
+        DangNhapModel model = new DangNhapModel();
+        DangNhapController controller = new DangNhapController(view, model);
+        view.setVisible(true);
+    }
 }
