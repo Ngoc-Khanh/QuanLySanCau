@@ -35,10 +35,8 @@ public class DatSanController {
         this.view.addDeleteListener(new DeleteListener());
         // Thêm trình nghe cho nút Cancel trên View
         this.view.addCancelListener(new CancelListener());
-        // Thêm trình nghe cho nút Excel  trên view
+        // Thêm trình nghe cho nút Excel trên view
         this.view.addExcelListener(new ExcelListener());
-        // Thêm trình nghe cho nút Reload trên View
-        this.view.addReloadListener(new ReloadListener());
 
         // Kết nối đến cơ sở dữ liệu khi tạo đối tượng Controller
         connectToDatabase();
@@ -87,15 +85,26 @@ public class DatSanController {
         return rs;
     }
 
+    public interface AddFormListener {
+        void onAddSuccess();
+    }
+
     // Lớp trình nghe cho nút Add
     class AddListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
             // Tạo một instance của lớp AddForm mới
             DatSanAddFrm afrm = new DatSanAddFrm();
+            // Đăng ký DatSanController làm listener
+            afrm.setAddFormListener(new AddFormListener() {
+                @Override
+                public void onAddSuccess() {
+                    // Khi thêm thành công, reload lại bảng
+                    displayData();
+                }
+            });
             // Hiển thị form mới
             afrm.setVisible(true);
-            displayData();
         }
     }
 
@@ -121,9 +130,9 @@ public class DatSanController {
         view.btnDelete.setEnabled(true);
         view.btnSave.setEnabled(false);
         view.btnCancel.setEnabled(false);
-        view.btnReload.setEnabled(true);
+        view.btnExcel.setEnabled(true);
     }
-    
+
     private void unlockFields() {
         view.txtMaKH.setEditable(true);
         view.txtMaSan.setEditable(true);
@@ -147,11 +156,31 @@ public class DatSanController {
         view.btnDelete.setEnabled(false);
         view.btnSave.setEnabled(true);
         view.btnCancel.setEnabled(true);
-        view.btnReload.setEnabled(true);
-    }     
+        view.btnExcel.setEnabled(false);
+    }
 
     private void editData(String maDS) {
         unlockFields();
+    }
+
+    private void fillFields(int selectedRow) {
+        if (selectedRow != -1) {
+            view.txtMaKH.setText((String) view.dataTable.getValueAt(selectedRow, 1));
+            view.txtMaSan.setText((String) view.dataTable.getValueAt(selectedRow, 2));
+            view.txtMaDH.setText((String) view.dataTable.getValueAt(selectedRow, 3));
+            view.cmbLoaiSan.setSelectedItem(view.dataTable.getValueAt(selectedRow, 4));
+            view.spNgayBatDau.setValue(view.dataTable.getValueAt(selectedRow, 5));
+            view.spNgayKetThuc.setValue(view.dataTable.getValueAt(selectedRow, 6));
+            view.spGioBatDau.setValue(view.dataTable.getValueAt(selectedRow, 7));
+            view.spGioKetThuc.setValue(view.dataTable.getValueAt(selectedRow, 8));
+            view.cbThu2.setSelected(Boolean.parseBoolean((String) view.dataTable.getValueAt(selectedRow, 9)));
+            view.cbThu3.setSelected(Boolean.parseBoolean((String) view.dataTable.getValueAt(selectedRow, 10)));
+            view.cbThu4.setSelected(Boolean.parseBoolean((String) view.dataTable.getValueAt(selectedRow, 11)));
+            view.cbThu5.setSelected(Boolean.parseBoolean((String) view.dataTable.getValueAt(selectedRow, 12)));
+            view.cbThu6.setSelected(Boolean.parseBoolean((String) view.dataTable.getValueAt(selectedRow, 13)));
+            view.cbThu7.setSelected(Boolean.parseBoolean((String) view.dataTable.getValueAt(selectedRow, 14)));
+            view.cbChuNhat.setSelected(Boolean.parseBoolean((String) view.dataTable.getValueAt(selectedRow, 15)));
+        }
     }
 
     // Lớp trình nghe cho nút Edit
@@ -162,15 +191,17 @@ public class DatSanController {
             if (selectedRow != -1) {
                 String maDS = (String) view.dataTable.getValueAt(selectedRow, 0);
                 editData(maDS);
+                fillFields(selectedRow);
                 displayData();
             } else {
-                JOptionPane.showMessageDialog(view, "Vui lòng chọn một bản ghi để sửa.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(view, "Vui lòng chọn một bản ghi để sửa.", "Lỗi",
+                        JOptionPane.ERROR_MESSAGE);
             }
         }
     }
 
     private void saveData(String maDS) {
-        String query = "UPDATE danhsachdatsan SET MaKH = ?, MaSan = ?, MaDH = ?, LoaiSan = ?, NgayBatDau = ?, NgayKetThuc = ?, GioBatDau = ?, GioKetThuc = ?, Thu_2 = ?, Thu_3 = ?, Thu_4 = ?, Thu_5 = ?, Thu_6 = ?, Thu_7 = ?, ChuNhat = ?, TrangThai = ?, SoGioThue = ? WHERE MaDS = ?";
+        String query = "UPDATE danhsachdatsan SET MaKH = ?, MaSan = ?, MaDH = ?, LoaiSan = ?, NgayBatDau = ?, NgayKetThuc = ?, GioBatDau = ?, GioKetThuc = ?, Thu_2 = ?, Thu_3 = ?, Thu_4 = ?, Thu_5 = ?, Thu_6 = ?, Thu_7 = ?, ChuNhat = ?, SoGioThue = ? WHERE MaDS = ?";
         try {
             PreparedStatement st = conn.prepareStatement(query);
             st.setString(1, view.txtMaKH.getText());
@@ -188,14 +219,14 @@ public class DatSanController {
             st.setString(13, view.cbThu6.isSelected() ? "1" : "0");
             st.setString(14, view.cbThu7.isSelected() ? "1" : "0");
             st.setString(15, view.cbChuNhat.isSelected() ? "1" : "0");
-            st.setString(16, view.cmbTrangThai.getSelectedItem().toString());
 
             // Tính số giờ
-            long milliseconds = ((java.util.Date) view.spGioKetThuc.getValue()).getTime() - ((java.util.Date) view.spGioBatDau.getValue()).getTime();
+            long milliseconds = ((java.util.Date) view.spGioKetThuc.getValue()).getTime()
+                    - ((java.util.Date) view.spGioBatDau.getValue()).getTime();
             int hours = (int) (milliseconds / (1000 * 60 * 60));
-            st.setInt(17, hours);
+            st.setInt(16, hours);
 
-            st.setString(18, maDS);
+            st.setString(17, maDS);
             st.executeUpdate();
             int rowsUpdated = st.executeUpdate();
             if (rowsUpdated > 0) {
@@ -222,18 +253,20 @@ public class DatSanController {
             }
         }
     }
-    
+
     // Phương thức để xóa dữ liệu từ cơ sở dữ liệu
     private void deleteData(String maDS) {
         try {
             String query = "DELETE FROM danhsachdatsan WHERE MaDS = '" + maDS + "'";
             st.executeUpdate(query);
-            JOptionPane.showMessageDialog(view, "Bản ghi đã được xóa thành công.", "Thành công", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(view, "Bản ghi đã được xóa thành công.", "Thành công",
+                    JOptionPane.INFORMATION_MESSAGE);
         } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(view, "Lỗi khi xóa bản ghi: " + ex.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(view, "Lỗi khi xóa bản ghi: " + ex.getMessage(), "Lỗi",
+                    JOptionPane.ERROR_MESSAGE);
         }
     }
-    
+
     // Lớp trình nghe cho nút Delete
     class DeleteListener implements ActionListener {
         @Override
@@ -241,13 +274,15 @@ public class DatSanController {
             int selectedRow = view.dataTable.getSelectedRow(); // Lấy chỉ mục của hàng đã chọn
             if (selectedRow != -1) { // Nếu có một hàng được chọn
                 String maDS = (String) view.dataTable.getValueAt(selectedRow, 0); // Lấy MaDS từ hàng đã chọn
-                int option = JOptionPane.showConfirmDialog(view, "Bạn có chắc chắn muốn xóa bản ghi này không?", "Xác nhận", JOptionPane.YES_NO_OPTION);
+                int option = JOptionPane.showConfirmDialog(view, "Bạn có chắc chắn muốn xóa bản ghi này không?",
+                        "Xác nhận", JOptionPane.YES_NO_OPTION);
                 if (option == JOptionPane.YES_OPTION) {
                     deleteData(maDS); // Xóa bản ghi từ cơ sở dữ liệu
                     displayData(); // Làm mới bảng
                 }
             } else {
-                JOptionPane.showMessageDialog(view, "Vui lòng chọn một bản ghi để xóa.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(view, "Vui lòng chọn một bản ghi để xóa.", "Lỗi",
+                        JOptionPane.ERROR_MESSAGE);
             }
         }
     }
@@ -280,50 +315,50 @@ public class DatSanController {
 
             cell = row.createCell(5, CellType.STRING);
             cell.setCellValue("Ngày bắt đầu");
-            
+
             cell = row.createCell(6, CellType.STRING);
             cell.setCellValue("Ngày kết thúc");
-            
+
             cell = row.createCell(7, CellType.STRING);
             cell.setCellValue("Giờ bắt đầu");
-            
+
             cell = row.createCell(8, CellType.STRING);
             cell.setCellValue("Giờ kết thúc");
-            
+
             cell = row.createCell(9, CellType.STRING);
             cell.setCellValue("Số giờ thuê");
-            
+
             cell = row.createCell(10, CellType.STRING);
             cell.setCellValue("Thứ 2");
-            
+
             cell = row.createCell(11, CellType.STRING);
             cell.setCellValue("Thứ 3");
-            
+
             cell = row.createCell(12, CellType.STRING);
             cell.setCellValue("Thứ 4");
-            
+
             cell = row.createCell(13, CellType.STRING);
             cell.setCellValue("Thứ 5");
 
             cell = row.createCell(14, CellType.STRING);
             cell.setCellValue("Thứ 6");
-            
+
             cell = row.createCell(15, CellType.STRING);
             cell.setCellValue("Thứ 7");
 
             cell = row.createCell(16, CellType.STRING);
             cell.setCellValue("Chủ nhật");
-            
+
             cell = row.createCell(17, CellType.STRING);
             cell.setCellValue("Trạng thái");
-            
+
             int rowCount = view.dataTable.getRowCount(); // Lấy số lượng hàng trên bảng
             int columnCount = view.dataTable.getColumnCount(); // Lấy số lượng cột trên bảng
-    
+
             // Lặp qua từng hàng của bảng
             for (int i = 0; i < rowCount; i++) {
                 row = sheet.createRow(i + 1); // Bắt đầu từ hàng 1, vì hàng 0 đã được sử dụng cho tiêu đề
-    
+
                 // Lặp qua từng cột của hàng và thêm dữ liệu vào file Excel
                 for (int j = 0; j < columnCount; j++) {
                     Object value = view.dataTable.getValueAt(i, j); // Lấy giá trị của ô tại hàng i, cột j
@@ -344,23 +379,15 @@ public class DatSanController {
         }
     }
 
-
     // Lớp trình nghe cho nút Cancel
     class CancelListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            int option = JOptionPane.showConfirmDialog(view, "Bạn có chắc chắn muốn hủy không?", "Xác nhận", JOptionPane.YES_NO_OPTION);
+            int option = JOptionPane.showConfirmDialog(view, "Bạn có chắc chắn muốn hủy không?", "Xác nhận",
+                    JOptionPane.YES_NO_OPTION);
             if (option == JOptionPane.YES_OPTION) {
                 lockFields(); // Mở khóa các TextField và checkbox trước khi thoát
             }
-        }
-    }
-
-    // Lớp trình nghe cho nút Reload
-    class ReloadListener implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            displayData(); // Tải lại dữ liệu
         }
     }
 
@@ -385,5 +412,12 @@ public class DatSanController {
         dataList.toArray(data);
 
         return data;
+    }
+
+    public static void main(String[] args) {
+        DatSanView view = new DatSanView();
+        DatSanModel model = new DatSanModel();
+        DatSanController controller = new DatSanController(model, view);
+        view.setVisible(true);
     }
 }

@@ -4,6 +4,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JOptionPane;
 
+import QuanLyDatSan.DatSanController;
+import QuanLyDatSan.DatSanModel;
+import QuanLyDatSan.DatSanView;
+
 public class DangNhapController {
     private DangNhapView view;
     private DangNhapModel model;
@@ -17,7 +21,10 @@ public class DangNhapController {
     
     private void openIndexFrm() {
         // Gọi form mới từ package khác
-        new MainMenu.MainMenuView().setVisible(true);
+        DatSanView view = new DatSanView();
+        DatSanModel model = new DatSanModel();
+        DatSanController controller = new DatSanController(model, view);
+        view.setVisible(true);
     }
 
     class dangNhapListioner implements ActionListener {

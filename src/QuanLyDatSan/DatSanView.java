@@ -11,15 +11,15 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 
-import QuanLyDatSan.DatSanController.ExcelListener;
+import MainMenu.MainMenuView;
 
-public class DatSanView extends JFrame {
+public class DatSanView extends MainMenuView {
     public JTextField txtMaDS, txtMaKH, txtMaSan, txtMaDH, txtSoGioThue;
     public JSpinner spNgayBatDau, spNgayKetThuc, spGioBatDau, spGioKetThuc;
     public SpinnerDateModel dateModelBatDau, dateModelKetThuc, timeModelBatDau, timeModelKetThuc;
     public JCheckBox cbThu2, cbThu3, cbThu4, cbThu5, cbThu6, cbThu7, cbChuNhat;
     public JComboBox<String> cmbTrangThai, cmbLoaiSan;
-    public JButton btnAdd, btnEdit, btnDelete, btnCancel, btnReload, btnSave, btnExcel;
+    public JButton btnAdd, btnEdit, btnDelete, btnCancel, btnSave, btnExcel;
     public JTable dataTable;
 
     public DatSanView() {
@@ -52,7 +52,7 @@ public class DatSanView extends JFrame {
         gbc.gridx = 1;
         gbc.gridy = 1;
         inputPanel.add(txtMaKH, gbc);
-        
+
         // Label và TextField cho Mã Sân
         gbc.gridx = 0;
         gbc.gridy = 2;
@@ -75,7 +75,7 @@ public class DatSanView extends JFrame {
         gbc.gridx = 0;
         gbc.gridy = 4;
         inputPanel.add(new JLabel("Loại Sân:"), gbc);
-        cmbLoaiSan = new JComboBox<>(new String[] {"VIP", "SVIP", "SSVIP"});
+        cmbLoaiSan = new JComboBox<>(new String[] { "VIP", "SVIP", "SSVIP" });
         gbc.gridx = 1;
         gbc.gridy = 4;
         gbc.fill = GridBagConstraints.HORIZONTAL;
@@ -139,17 +139,17 @@ public class DatSanView extends JFrame {
         gbc.gridx = 1;
         gbc.gridy = 9;
         inputPanel.add(txtSoGioThue, gbc);
-        
+
         // Label và TextField cho Trạng thái
         gbc.gridx = 0;
         gbc.gridy = 10;
         inputPanel.add(new JLabel("Trạng thái"), gbc);
-        cmbTrangThai = new JComboBox<>(new String[] {"0", "1"});
+        cmbTrangThai = new JComboBox<>(new String[] { "0", "1" });
         gbc.gridx = 1;
         gbc.gridy = 10;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         inputPanel.add(cmbTrangThai, gbc);
-        
+
         // Thêm checkbox
         gbc.gridx = 0;
         gbc.gridy = 11;
@@ -196,30 +196,26 @@ public class DatSanView extends JFrame {
         inputPanel.add(btnEdit, gbc);
         gbc.gridx = 1;
         gbc.gridy = 16;
-        btnSave = new JButton("Lưu");
-        inputPanel.add(btnSave, gbc);
-        gbc.gridx = 0;
-        gbc.gridy = 17;
-        btnCancel = new JButton("Hủy");
-        inputPanel.add(btnCancel, gbc);
-        gbc.gridx = 1;
-        gbc.gridy = 17;
         btnExcel = new JButton("Excel");
         inputPanel.add(btnExcel, gbc);
         gbc.gridx = 0;
-        gbc.gridy = 18;
-        gbc.gridwidth = GridBagConstraints.REMAINDER;
-        btnReload = new JButton("Reload");
-        inputPanel.add(btnReload, gbc);
+        gbc.gridy = 17;
+        btnSave = new JButton("Lưu");
+        inputPanel.add(btnSave, gbc);
+        gbc.gridx = 1;
+        gbc.gridy = 17;
+        btnCancel = new JButton("Hủy");
+        inputPanel.add(btnCancel, gbc);
+        
 
         // Panel chứa bảng hiển thị dữ liệu
         JPanel dataPanel = new JPanel(new BorderLayout());
 
         // Tạo bảng để hiển thị dữ liệu
-        String[] columnNames = {"Mã DS", "Mã KH", "Mã Sân", "Mã ĐH", "Loại Sân",
-            "Ngày Bắt Đầu", "Ngày Kết Thúc", "Giờ Bắt Đầu", "Giờ Kết Thúc",
-            "Số Giờ Thuê", "Thứ 2", "Thứ 3", "Thứ 4", "Thứ 5", "Thứ 6", "Thứ 7",
-            "Chủ nhật", "Trạng thái"};
+        String[] columnNames = { "Mã DS", "Mã KH", "Mã Sân", "Mã ĐH", "Loại Sân",
+                "Ngày Bắt Đầu", "Ngày Kết Thúc", "Giờ Bắt Đầu", "Giờ Kết Thúc",
+                "Số Giờ Thuê", "Thứ 2", "Thứ 3", "Thứ 4", "Thứ 5", "Thứ 6", "Thứ 7",
+                "Chủ nhật", "Tổng tiền sân" };
         dataTable = new JTable(new DefaultTableModel(columnNames, 0));
         JScrollPane scrollPane = new JScrollPane(dataTable);
         dataPanel.add(scrollPane, BorderLayout.CENTER);
@@ -228,6 +224,10 @@ public class DatSanView extends JFrame {
         JPanel mainPanel = new JPanel(new BorderLayout());
         mainPanel.add(inputPanel, BorderLayout.EAST);
         mainPanel.add(dataPanel, BorderLayout.CENTER);
+
+        JPanel menu = super.menu();
+        add(menu, BorderLayout.WEST);
+        add(mainPanel, BorderLayout.CENTER);
 
         // Khóa các JTextField
         txtMaDS.setEditable(false);
@@ -254,7 +254,7 @@ public class DatSanView extends JFrame {
 
         add(mainPanel);
         setVisible(true);
-        
+
         dataTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
@@ -273,7 +273,7 @@ public class DatSanView extends JFrame {
 
                         txtSoGioThue.setText(calculateSoGioThue(selectedRow));
                         cmbTrangThai.setSelectedItem((String) dataTable.getValueAt(selectedRow, 17));
-                        
+
                         cbThu2.setSelected(dataTable.getValueAt(selectedRow, 10).equals("1"));
                         cbThu3.setSelected(dataTable.getValueAt(selectedRow, 11).equals("1"));
                         cbThu4.setSelected(dataTable.getValueAt(selectedRow, 12).equals("1"));
@@ -286,7 +286,7 @@ public class DatSanView extends JFrame {
             }
         });
     }
-    
+
     private String calculateSoGioThue(int selectedRow) {
         String gioBatDauStr = (String) dataTable.getValueAt(selectedRow, 7);
         String gioKetThucStr = (String) dataTable.getValueAt(selectedRow, 8);
@@ -344,7 +344,7 @@ public class DatSanView extends JFrame {
     public void addEditListener(ActionListener listener) {
         btnEdit.addActionListener(listener);
     }
-        
+
     // Phương thức này để thêm một trình nghe cho nút Save
     public void addSaveListener(ActionListener listener) {
         btnSave.addActionListener(listener);
@@ -363,13 +363,8 @@ public class DatSanView extends JFrame {
     // Phương thức này để thêm một trình nghe cho nút Cancel
     public void addExcelListener(ActionListener listener) {
         btnExcel.addActionListener(listener);
-    } 
-
-    // Phương thức này để thêm một trình nghe cho nút Reload
-    public void addReloadListener(ActionListener listener) {
-        btnReload.addActionListener(listener);
     }
-    
+
     // Phương thức này để cập nhật dữ liệu trong bảng từ cơ sở dữ liệu
     public void updateTableData(String[][] data) {
         DefaultTableModel model = (DefaultTableModel) dataTable.getModel();
@@ -398,7 +393,6 @@ public class DatSanView extends JFrame {
             return null;
         }
     }
-
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> new DatSanView());

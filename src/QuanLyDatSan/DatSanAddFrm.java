@@ -1,6 +1,7 @@
 package QuanLyDatSan;
 
 import java.sql.*;
+import java.util.Calendar;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -15,6 +16,8 @@ import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.SpinnerDateModel;
 
+import QuanLyDatSan.DatSanController.AddFormListener;
+
 public class DatSanAddFrm extends JFrame {
     private JTextField txtMaKH, txtMaSan, txtMaDH, txtSoGioThue;
     private JSpinner spNgayBatDau, spNgayKetThuc, spGioBatDau, spGioKetThuc;
@@ -24,6 +27,11 @@ public class DatSanAddFrm extends JFrame {
     private JLabel MaDS, MaKH, MaSan, MaDH, LoaiSan, NgayBatDau, NgayKetThuc,
             GioBatDau, GioKetThuc, SoGioThue, CacThuTrongTuan, TrangThai;
     private JButton btnSubmit, btnCancel;
+    private AddFormListener addFormListener;
+
+    public void setAddFormListener(AddFormListener listener) {
+        this.addFormListener = listener;
+    }    
     
     public DatSanAddFrm() {
         setTitle("Thêm dữ liệu mới");
@@ -61,18 +69,25 @@ public class DatSanAddFrm extends JFrame {
         cmbTrangThai = new JComboBox<>(new String[] {"0", "1"});
 
         dateModelBatDau =  new SpinnerDateModel();
-        dateModelKetThuc =  new SpinnerDateModel();
+        dateModelBatDau.setCalendarField(Calendar.DAY_OF_MONTH);
         spNgayBatDau = new JSpinner(dateModelBatDau);
-        spNgayKetThuc = new JSpinner(dateModelKetThuc);
         spNgayBatDau.setEditor(new JSpinner.DateEditor(spNgayBatDau, "dd/MM/yyyy"));
+
+        dateModelKetThuc = new SpinnerDateModel();
+        dateModelKetThuc.setCalendarField(Calendar.DAY_OF_MONTH);
+        spNgayKetThuc = new JSpinner(dateModelKetThuc);
         spNgayKetThuc.setEditor(new JSpinner.DateEditor(spNgayKetThuc, "dd/MM/yyyy"));
+
         timeModelBatDau = new SpinnerDateModel();
-        timeModelKetThuc = new SpinnerDateModel();
+        timeModelBatDau.setCalendarField(Calendar.MINUTE);
         spGioBatDau = new JSpinner(timeModelBatDau);
-        spGioKetThuc = new JSpinner(timeModelKetThuc);
         JSpinner.DateEditor gioBatDau = new JSpinner.DateEditor(spGioBatDau, "HH:mm");
-        JSpinner.DateEditor gioKetThuc = new JSpinner.DateEditor(spGioKetThuc, "HH:mm");
         spGioBatDau.setEditor(gioBatDau);
+
+        timeModelKetThuc = new SpinnerDateModel();
+        timeModelKetThuc.setCalendarField(Calendar.MINUTE);
+        spGioKetThuc = new JSpinner(timeModelKetThuc);
+        JSpinner.DateEditor gioKetThuc = new JSpinner.DateEditor(spGioKetThuc, "HH:mm");
         spGioKetThuc.setEditor(gioKetThuc);
 
         btnSubmit = new JButton("Xác nhận");
@@ -144,21 +159,14 @@ public class DatSanAddFrm extends JFrame {
         String PASS = "";
     
         try (Connection conn = DriverManager.getConnection(URL, USER, PASS)) {
-            // Chuẩn bị câu lệnh SQL để thêm dữ liệu vào bảng
-            String querry = "INSERT INTO danhsachdatsan (MaKH, MaSan, MaDH, LoaiSan, NgayBatDau, NgayKetThuc, GioBatDau, GioKetThuc, Thu_2, Thu_3, Thu_4, Thu_5, Thu_6, Thu_7, ChuNhat, TrangThai, SoGioThue) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            // Chuẩn bị câu lệnh SQL để  thêm dữ liệu vào bảng
+            String querry = "INSERT INTO danhsachdatsan (MaKH, MaSan, MaDH, LoaiSan, NgayBatDau, NgayKetThuc, GioBatDau, GioKetThuc, Thu_2, Thu_3, Thu_4, Thu_5, Thu_6, Thu_7, ChuNhat, SoGioThue) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             PreparedStatement st = conn.prepareStatement(querry);
-    
-            // Lấy giá trị của giờ bắt đầu và giờ kết thúc từ JSpinner
-            Timestamp gioBatDau = new Timestamp(((java.util.Date) spGioBatDau.getValue()).getTime());
-            Timestamp gioKetThuc = new Timestamp(((java.util.Date) spGioKetThuc.getValue()).getTime());
-
-            st.setTimestamp(7, gioBatDau);
-            st.setTimestamp(8, gioKetThuc);
 
             // Tính số giờ nếu giờ kết thúc lớn hơn giờ bắt đầu
-            long milliseconds = gioKetThuc.getTime() - gioBatDau.getTime();
+            long milliseconds = ((java.util.Date) spGioKetThuc.getValue()).getTime() - ((java.util.Date) spGioBatDau.getValue()).getTime();
             int hours = (int) (milliseconds / (1000 * 60 * 60));
-            st.setInt(17, hours);
+            st.setInt(16, hours);
     
             // Đặt giá trị cho các tham số trong câu lệnh SQL
             st.setString(1, txtMaKH.getText());
@@ -179,11 +187,12 @@ public class DatSanAddFrm extends JFrame {
             st.setString(14, cbThu7.isSelected() ? "1" : "0");
             st.setString(15, cbChuNhat.isSelected() ? "1" : "0");
 
-            st.setString(16, cmbTrangThai.getSelectedItem().toString());
+            // st.setString(16, cmbTrangThai.getSelectedItem().toString());
     
             int rowsInserted = st.executeUpdate();
             if (rowsInserted > 0) {
                 JOptionPane.showMessageDialog(null, "Thêm dữ liệu thành công");
+                addFormListener.onAddSuccess();
             } else {
                 JOptionPane.showMessageDialog(null, "Thêm dữ liệu thất bại");
             }

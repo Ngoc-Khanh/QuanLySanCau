@@ -1,80 +1,94 @@
 package MainMenu;
 
-import java.awt.*;
-import java.awt.event.*;
 import javax.swing.*;
-import javax.swing.border.Border;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-import javax.swing.table.DefaultTableModel;
 
-import Model.ItemModel;
-import QuanLyDatSan.DatSanAddFrm;
+import org.apache.poi.hslf.blip.DIB;
+
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 import QuanLyDatSan.DatSanController;
 import QuanLyDatSan.DatSanModel;
 import QuanLyDatSan.DatSanView;
-import View.ItemView;
-import controller.ItemController;
 
 public class MainMenuView extends JFrame {
-    private String[] menuItems;
-    private JList<String> menuList;
-    private JScrollPane scrollPane;
-    private JTable dataTable;
+    public SpringLayout layout;
+    public JPanel panel;
 
-    public MainMenuView() {
-        setTitle("Quản lý đặt sân cầu");
-        setSize(1200, 600);
+    JButton btnDatSan;
+    JButton btnDichVu;
+
+    public JPanel menu() {
+        // Gọi các buttons
+        btnDatSan = new JButton("Quản lý đặt sân");
+        btnDichVu = new JButton("Quản lý dịch vụ");
+        
+        // Set chiều dài cho các buttons
+        Dimension btnSize = new Dimension(200, 50);
+        btnDatSan.setPreferredSize(btnSize);
+        btnDichVu.setPreferredSize(btnSize);
+        
+        Color backColor = new Color(0, 114, 60);
+        Color foreColor = Color.white;
+        Color borderColor = new Color(73, 105, 137);
+        
+        // Set màu button
+        // btnDatSan.setBackground(backColor); 
+
+        // Set màu chữ
+        // btnDatSan.setForeground(foreColor);
+
+        // Set viền buttons
+        // btnDatSan.setBorder(BorderFactory.createLineBorder(borderColor));
+
+        // Logo
+        JLabel logo = new JLabel();
+        ImageIcon originalImageIcon = new ImageIcon("C:\\Users\\Admin\\OneDrive - tuyenquang.edu.vn\\Study\\javas\\QuanLySanCau\\src\\img\\logo.jpg");
+        Image originalImage = originalImageIcon.getImage();
+        int scaledWidth = 200;
+        int scaleHeight = 200;
+        Image scaleImage = originalImage.getScaledInstance(scaledWidth, scaleHeight, Image.SCALE_SMOOTH);
+        ImageIcon scaleImageIcon = new ImageIcon(scaleImage);
+        logo.setIcon(scaleImageIcon);
+
+        // Set căn lề trái cho văn bản trong các buttons
+        btnDatSan.setHorizontalAlignment(SwingConstants.LEFT);
+        btnDichVu.setHorizontalAlignment(SwingConstants.LEFT);
+
+        layout = new SpringLayout();
+        panel = new JPanel(layout);
+        panel.setPreferredSize(new Dimension(200, 600));
+
+        JPanel squarePanel = new JPanel();
+        squarePanel.setPreferredSize(new Dimension(200, 1000));
+        squarePanel.setBackground(backColor);
+
+        panel.add(btnDatSan);
+        panel.add(btnDichVu);
+        panel.add(logo);
+        panel.add(squarePanel);
+
+        layout.putConstraint(SpringLayout.NORTH, btnDatSan, 200, SpringLayout.NORTH, panel);
+        layout.putConstraint(SpringLayout.WEST, btnDatSan, 0, SpringLayout.WEST, panel);
+
+        layout.putConstraint(SpringLayout.NORTH, btnDichVu, 250, SpringLayout.NORTH, panel);
+        layout.putConstraint(SpringLayout.WEST, btnDichVu, 0, SpringLayout.WEST, panel);
+
+        setSize(1200, 700);
         setLocationRelativeTo(null);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        menuItems = new String[]{"Quản lý đặt sân", "Quản lý dịch vụ", "Hóa đơn", "..."};
-        menuList = new JList<>(menuItems);
-        scrollPane = new JScrollPane(menuList);
-
-        getContentPane().add(scrollPane, BorderLayout.WEST);
-
-        menuList.addListSelectionListener(new ListSelectionListener() {
+        btnDatSan.addActionListener(new ActionListener() {
             @Override
-            public void valueChanged(ListSelectionEvent e) {
-                if (!e.getValueIsAdjusting()) {
-                    String selectedValue = menuList.getSelectedValue();
-                    if (selectedValue != null && selectedValue.equals("Quản lý đặt sân")) {
-                        showDatSan();
-                    }
-                    if (selectedValue != null && selectedValue.equals("Quản lý dịch vụ")) {
-                    }
-                }
-            }
-        }); 
-
-        setVisible(true);
-    }
-
-    public void showDatSan() {
-        DatSanView view = new DatSanView();
-        DatSanModel model = new DatSanModel();
-        DatSanController controller = new DatSanController(model, view);
-        view.setVisible(true);
-    }
-
-    // Phương thức này để cập nhật dữ liệu trong bảng từ cơ sở dữ liệu
-    public void updateTableData(String[][] data) {
-        DefaultTableModel model = (DefaultTableModel) dataTable.getModel();
-        model.setRowCount(0); // Xóa dữ liệu cũ trong bảng
-        for (String[] row : data) {
-            model.addRow(row); // Thêm dữ liệu mới vào bảng
-        }
-    }
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                MainMenuView view = new MainMenuView();
-                MainMenuModel model = new MainMenuModel();
-                MainMenuController controller = new MainMenuController(model, view);
+            public void actionPerformed(ActionEvent e) {
+                dispose();
+                DatSanView view = new DatSanView();
+                DatSanModel model = new DatSanModel();
+                DatSanController controller = new DatSanController(model, view);
                 view.setVisible(true);
             }
         });
+
+        return panel;
     }
 }
