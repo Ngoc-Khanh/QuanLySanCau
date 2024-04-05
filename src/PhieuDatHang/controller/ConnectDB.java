@@ -1,4 +1,4 @@
-package PhieuDatHang.controller;
+package controller;
 
 import static controller.DatabaseInfo.password;
 import static controller.DatabaseInfo.url;

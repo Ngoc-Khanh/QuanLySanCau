@@ -43,7 +43,6 @@ public class DatSanController {
         this.view.addPhieuDonHangListener(new PhieuDonHangListener());
 
 
-
         // Kết nối đến cơ sở dữ liệu khi tạo đối tượng Controller
         connectToDatabase();
 
@@ -55,7 +54,7 @@ public class DatSanController {
     private void connectToDatabase() {
         try {
             // Thực hiện kết nối đến cơ sở dữ liệu
-            String URL = "jdbc:mysql://localhost:3306/quynh";
+            String URL = "jdbc:mysql://localhost:3306/sancau";
             String USER = "root";
             String PASS = "";
             conn = DriverManager.getConnection(URL, USER, PASS);
@@ -138,6 +137,7 @@ public class DatSanController {
         view.btnSave.setEnabled(false);
         view.btnCancel.setEnabled(false);
         view.btnExcel.setEnabled(true);
+        view.btnPhieuDonHang.setEnabled(true);
     }
 
     private void unlockFields() {
@@ -164,6 +164,7 @@ public class DatSanController {
         view.btnSave.setEnabled(true);
         view.btnCancel.setEnabled(true);
         view.btnExcel.setEnabled(false);
+        view.btnPhieuDonHang.setEnabled(false);
     }
 
     private void editData(String maDS) {
@@ -405,6 +406,7 @@ public class DatSanController {
             int selectedRow = view.dataTable.getSelectedRow();
             if (selectedRow != -1) {
                 String maDS = (String) view.dataTable.getValueAt(selectedRow, 0);
+                getDataFromDatabase();
                 new PhieuDatHangview();
                 displayData();
             } else {

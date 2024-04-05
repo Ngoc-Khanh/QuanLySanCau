@@ -224,7 +224,7 @@ public class DatSanView extends MainMenuView {
         JPanel dataPanel = new JPanel(new BorderLayout());
 
         // Tạo bảng để hiển thị dữ liệu
-        String[] columnNames = { "Mã DS", "Mã KH", "Mã Sân", "Mã ĐH", "Loại Sân",
+        String[] columnNames = { "Mã DS", "Mã KH", "Mã Sân", "Tổng tiền dịch vụ", "Loại Sân",
                 "Ngày Bắt Đầu", "Ngày Kết Thúc", "Giờ Bắt Đầu", "Giờ Kết Thúc",
                 "Số Giờ Thuê", "Thứ 2", "Thứ 3", "Thứ 4", "Thứ 5", "Thứ 6", "Thứ 7",
                 "Chủ nhật", "Tổng tiền sân"};

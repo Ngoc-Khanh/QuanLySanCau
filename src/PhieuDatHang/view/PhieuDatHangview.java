@@ -39,7 +39,7 @@ public class PhieuDatHangview extends JFrame {
     }
 
     public void formPhieuDatHang() throws SQLException {
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
         // Create menu table
         menuTableModel = new DefaultTableModel(new Object[][] {},
