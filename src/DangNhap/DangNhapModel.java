@@ -23,14 +23,9 @@ public class DangNhapModel {
     }
     
     public boolean kiemTra(String userName, String passWord) {
-        return "admin".equals(userName) && "1".equals(passWord);
-    }
-
-    public class index {
-
-        public void setVisible(boolean b) {
-            // TODO Auto-generated method stub
-            throw new UnsupportedOperationException("Unimplemented method 'setVisible'");
-        }
+        return ("Khánh".equals(userName) && "1".equals(passWord)) ||
+           ("Quỳnh".equals(userName) && "1".equals(passWord)) ||
+           ("Hiệp".equals(userName) && "1".equals(passWord)) ||
+           ("Khanh".equals(userName) && "1".equals(passWord));
     }
 }

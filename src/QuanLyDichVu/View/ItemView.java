@@ -2,6 +2,8 @@ package View;
 
 import Model.ItemModel;
 import controller.ItemController;
+
+import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -31,11 +33,9 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-/**
- *
- * @author admin
- */
-public class ItemView extends JFrame {
+import MainMenu.MainMenuView;
+
+public class ItemView extends MainMenuView {
 
     private JButton AddBtn, EditBtn, SaveBtn, DeleteBtn, ClearBtn, SearchBtn, ExportBtn;
     private JScrollPane JScrollPaneTable;
@@ -193,6 +193,10 @@ public class ItemView extends JFrame {
         ItemController controller = new ItemController();
         listItem = controller.getItemList();
         this.itemList(listItem);
+
+        JPanel menu = super.menu();
+        add(menu, BorderLayout.WEST);
+        add(panel, BorderLayout.CENTER);
 
         add(panel);
         setTitle("Form quản lý");

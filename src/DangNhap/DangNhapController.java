@@ -15,8 +15,8 @@ public class DangNhapController {
     public DangNhapController(DangNhapView view, DangNhapModel model) {
         this.view = view;
         this.model = model;
-        this.view.addDangNhapListioner(new dangNhapListioner());
-        this.view.addThoatListioner(new thoatsListener());
+        this.view.addDangNhapListener(new dangNhapListioner());
+        this.view.addThoatListener(new thoatsListener());
     }
     
     private void openIndexFrm() {

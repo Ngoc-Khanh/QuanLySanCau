@@ -11,6 +11,7 @@ import java.awt.event.ActionListener;
 import QuanLyDatSan.DatSanController;
 import QuanLyDatSan.DatSanModel;
 import QuanLyDatSan.DatSanView;
+import View.ItemView;
 
 public class MainMenuView extends JFrame {
     public SpringLayout layout;
@@ -34,17 +35,20 @@ public class MainMenuView extends JFrame {
         Color borderColor = new Color(73, 105, 137);
         
         // Set màu button
-        // btnDatSan.setBackground(backColor); 
+        btnDatSan.setBackground(backColor);
+        btnDichVu.setBackground(backColor);
 
         // Set màu chữ
-        // btnDatSan.setForeground(foreColor);
+        btnDatSan.setForeground(foreColor);
+        btnDichVu.setForeground(foreColor);
 
         // Set viền buttons
-        // btnDatSan.setBorder(BorderFactory.createLineBorder(borderColor));
+        btnDatSan.setBorder(BorderFactory.createLineBorder(borderColor));
+        btnDichVu.setBorder(BorderFactory.createLineBorder(borderColor));
 
         // Logo
         JLabel logo = new JLabel();
-        ImageIcon originalImageIcon = new ImageIcon("C:\\Users\\Admin\\OneDrive - tuyenquang.edu.vn\\Study\\javas\\QuanLySanCau\\src\\img\\logo.jpg");
+        ImageIcon originalImageIcon = new ImageIcon("D:\\code\\QuanLySanCau\\src\\img\\logo.jpg");
         Image originalImage = originalImageIcon.getImage();
         int scaledWidth = 200;
         int scaleHeight = 200;
@@ -89,6 +93,14 @@ public class MainMenuView extends JFrame {
             }
         });
 
+        btnDatSan.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                dispose();
+                SwingUtilities.invokeLater(ItemView::new);
+            }
+        });
+        
         return panel;
     }
 }

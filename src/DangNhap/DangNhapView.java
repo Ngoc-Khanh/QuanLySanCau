@@ -6,7 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class DangNhapView extends JFrame implements ActionListener {
-    private JTextField txtUser;
+    private JComboBox<String> comboBoxUser;
     private JPasswordField txtPass;
     private JButton btnDangNhap, btnThoat;
     
@@ -26,13 +26,14 @@ public class DangNhapView extends JFrame implements ActionListener {
         header.setFont(new Font("Arial", Font.BOLD, 16));
         
         JLabel userLabel = new JLabel("Tài khoản:");
-        txtUser = new JTextField();
+        String[] users = {"Khánh", "Quỳnh", "Hiệp", "Khanh"};
+        comboBoxUser = new JComboBox<>(users);
         JLabel passLabel = new JLabel("Mật khẩu:");
         txtPass = new JPasswordField();
         btnDangNhap = new JButton("Đăng nhập");
         btnThoat = new JButton("Thoát");
         
-        inputPanel.add(userLabel); inputPanel.add(txtUser);
+        inputPanel.add(userLabel); inputPanel.add(comboBoxUser);
         inputPanel.add(passLabel); inputPanel.add(txtPass);
         
         buttonPanel.add(btnDangNhap);
@@ -44,10 +45,16 @@ public class DangNhapView extends JFrame implements ActionListener {
         
         add(panel);
         setVisible(true);
+
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                txtPass.requestFocusInWindow();
+            }
+        });
     }
 
     public String getUser() {
-        return txtUser.getText();
+        return (String) comboBoxUser.getSelectedItem();
     }
     
     public String getPass() {
@@ -59,11 +66,11 @@ public class DangNhapView extends JFrame implements ActionListener {
         
     }
     
-    public void addDangNhapListioner(ActionListener listener) {
+    public void addDangNhapListener(ActionListener listener) {
         btnDangNhap.addActionListener(listener);
     }
     
-    public void addThoatListioner(ActionListener listener) {
+    public void addThoatListener(ActionListener listener) {
         btnThoat.addActionListener(listener);
     }
     
