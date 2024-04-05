@@ -158,15 +158,11 @@ public class DatSanAddFrm extends JFrame {
         String USER = "root";
         String PASS = "";
     
-        try (Connection conn = DriverManager.getConnection(URL, USER, PASS)) {
-            // Chuẩn bị câu lệnh SQL để  thêm dữ liệu vào bảng
-            String querry = "INSERT INTO danhsachdatsan (MaKH, MaSan, MaDH, LoaiSan, NgayBatDau, NgayKetThuc, GioBatDau, GioKetThuc, Thu_2, Thu_3, Thu_4, Thu_5, Thu_6, Thu_7, ChuNhat, SoGioThue) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-            PreparedStatement st = conn.prepareStatement(querry);
+        // Chuẩn bị câu lệnh SQL để  thêm dữ liệu vào bảng
+        String querry = "INSERT INTO danhsachdatsan (MaKH, MaSan, MaDH, LoaiSan, NgayBatDau, NgayKetThuc, GioBatDau, GioKetThuc, Thu_2, Thu_3, Thu_4, Thu_5, Thu_6, Thu_7, ChuNhat, SoGioThue) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-            // Tính số giờ nếu giờ kết thúc lớn hơn giờ bắt đầu
-            long milliseconds = ((java.util.Date) spGioKetThuc.getValue()).getTime() - ((java.util.Date) spGioBatDau.getValue()).getTime();
-            int hours = (int) (milliseconds / (1000 * 60 * 60));
-            st.setInt(16, hours);
+        try (Connection conn = DriverManager.getConnection(URL, USER, PASS)) {
+            PreparedStatement st = conn.prepareStatement(querry);
     
             // Đặt giá trị cho các tham số trong câu lệnh SQL
             st.setString(1, txtMaKH.getText());
@@ -187,8 +183,14 @@ public class DatSanAddFrm extends JFrame {
             st.setString(14, cbThu7.isSelected() ? "1" : "0");
             st.setString(15, cbChuNhat.isSelected() ? "1" : "0");
 
+            // Tính số giờ nếu giờ kết thúc lớn hơn giờ bắt đầu
+            long milliseconds = ((java.util.Date) spGioKetThuc.getValue()).getTime() - ((java.util.Date) spGioBatDau.getValue()).getTime();
+            int hours = (int) (milliseconds / (1000 * 60 * 60));
+            st.setInt(16, hours);
+
             // st.setString(16, cmbTrangThai.getSelectedItem().toString());
-    
+
+            st.executeUpdate();
             int rowsInserted = st.executeUpdate();
             if (rowsInserted > 0) {
                 JOptionPane.showMessageDialog(null, "Thêm dữ liệu thành công");

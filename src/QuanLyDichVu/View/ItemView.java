@@ -42,45 +42,45 @@ public class ItemView extends MainMenuView {
     private JTable Table;
     private JComboBox Sortcbb, TypeItemcbb;
     private JTextField SearchItemtf, IdItemtf, NameItemtf, UnitItemstf, PriceItemstf;
-    private JLabel IdItemlbl, NameItemlbl, TypeItemlbl, UnitItemlbl, PriceItemlbl,rowCountlbl;
-    private DefaultTableModel tblModel;//lưu tru dl để hiển thị trong Jtable
-    private final String[] columnNames = new String[]{
-        "Id sản phẩm", "Tên sản phẩm", "Loại sản phẩm", "Đơn vị tính", "Giá"};
-    private final Object data = new Object[][]{};
+    private JLabel IdItemlbl, NameItemlbl, TypeItemlbl, UnitItemlbl, PriceItemlbl, rowCountlbl;
+    private DefaultTableModel tblModel;// lưu tru dl để hiển thị trong Jtable
+    private final String[] columnNames = new String[] {
+            "Id sản phẩm", "Tên sản phẩm", "Loại sản phẩm", "Đơn vị tính", "Giá" };
+    private final Object data = new Object[][] {};
     private List<ItemModel> listItem = new ArrayList<>();
 
     int itemId;
 
     public ItemView() {
         form();
-        updateRowCount();//hiện số dòng ngay khi chạy form
+        updateRowCount();// hiện số dòng ngay khi chạy form
     }
 
     private void form() {
         JScrollPaneTable = new JScrollPane();
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        
+
         IdItemlbl = new JLabel("Mã sản phẩm");
         NameItemlbl = new JLabel("Tên sản phẩm");
         TypeItemlbl = new JLabel("Loại sản phẩm");
         UnitItemlbl = new JLabel("Đơn vị tính");
         PriceItemlbl = new JLabel("Giá");
-        rowCountlbl=new JLabel("Số dòng:");
+        rowCountlbl = new JLabel("Số dòng:");
         JLabel label = new JLabel("DỊCH VỤ");
         Font font = new Font(label.getFont().getName(), Font.BOLD, 25); // Đặt font chữ
         label.setFont(font); // Áp dụng font cho JLabel
 
         IdItemtf = new JTextField(15);
-        IdItemtf.setEditable(false);//không cho sửa
+        IdItemtf.setEditable(false);// không cho sửa
         NameItemtf = new JTextField(15);
-        TypeItemcbb = new JComboBox<>(new String[]{" ", "Đồ ăn", "Đồ uống", "Dụng cụ", "Khác"});
+        TypeItemcbb = new JComboBox<>(new String[] { " ", "Đồ ăn", "Đồ uống", "Dụng cụ", "Khác" });
         TypeItemcbb.setPreferredSize(new Dimension(155, 20));
         PriceItemstf = new JTextField(15);
         UnitItemstf = new JTextField(15);
         SearchItemtf = new JTextField();
         SearchItemtf.setPreferredSize(new Dimension(200, 25));
 
-        Sortcbb = new JComboBox<>(new String[]{"Sắp xếp", "Tăng dần theo giá", "Giảm dần theo giá"});
+        Sortcbb = new JComboBox<>(new String[] { "Sắp xếp", "Tăng dần theo giá", "Giảm dần theo giá" });
         AddBtn = new JButton("Thêm");
         EditBtn = new JButton("Sửa");
         SaveBtn = new JButton("Lưu");
@@ -89,14 +89,14 @@ public class ItemView extends MainMenuView {
         SearchBtn = new JButton("Tìm theo tên/loại");
         ExportBtn = new JButton("Xuất Excel");
 
-        //JScrollPaneTable = new JScrollPane();
+        // JScrollPaneTable = new JScrollPane();
         Table = new JTable();
         tblModel = new DefaultTableModel((Object[][]) data, columnNames);
         Table.setModel(tblModel);
         JScrollPaneTable.setViewportView(Table);
-        Table.getTableHeader().setReorderingAllowed(false);//không cho sửa các tiêu đề cột
+        Table.getTableHeader().setReorderingAllowed(false);// không cho sửa các tiêu đề cột
         JScrollPaneTable.setPreferredSize(new Dimension(1247, 300));
-        Table.setDefaultEditor(Object.class, null);//không cho sửa dữ liệu trong bảng
+        Table.setDefaultEditor(Object.class, null);// không cho sửa dữ liệu trong bảng
 
         SpringLayout layout = new SpringLayout();
         JPanel panel = new JPanel();
@@ -118,7 +118,8 @@ public class ItemView extends MainMenuView {
         panel.add(PriceItemstf);
 
         JPanel buttonPanel = new JPanel();
-        buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS)); // Sử dụng BoxLayout để các nút được sắp xếp theo chiều ngang
+        buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS)); // Sử dụng BoxLayout để các nút được sắp
+                                                                             // xếp theo chiều ngang
 
         // Thêm các nút vào panel
         buttonPanel.add(AddBtn);
@@ -140,11 +141,11 @@ public class ItemView extends MainMenuView {
         panel.add(SearchBtn);
         panel.add(Sortcbb);
 
-        //Bang item
+        // Bang item
         layout.putConstraint(SpringLayout.WEST, label, 115, SpringLayout.WEST, panel);
         layout.putConstraint(SpringLayout.NORTH, label, 15, SpringLayout.NORTH, panel);
-        
-        layout.putConstraint(SpringLayout.WEST , rowCountlbl, 65, SpringLayout.EAST,UnitItemstf);
+
+        layout.putConstraint(SpringLayout.WEST, rowCountlbl, 65, SpringLayout.EAST, UnitItemstf);
         layout.putConstraint(SpringLayout.SOUTH, rowCountlbl, 20, SpringLayout.SOUTH, JScrollPaneTable);
 
         layout.putConstraint(SpringLayout.WEST, Sortcbb, 315, SpringLayout.WEST, panel);
@@ -159,7 +160,7 @@ public class ItemView extends MainMenuView {
         layout.putConstraint(SpringLayout.WEST, JScrollPaneTable, 20, SpringLayout.WEST, panel);
         layout.putConstraint(SpringLayout.NORTH, JScrollPaneTable, 50, SpringLayout.NORTH, panel);
         layout.putConstraint(SpringLayout.EAST, JScrollPaneTable, -19, SpringLayout.EAST, panel);
-        //cot 1
+        // cot 1
         layout.putConstraint(SpringLayout.WEST, IdItemlbl, 80, SpringLayout.WEST, panel);
         layout.putConstraint(SpringLayout.NORTH, IdItemlbl, 20, SpringLayout.SOUTH, JScrollPaneTable);
         layout.putConstraint(SpringLayout.WEST, IdItemtf, 190, SpringLayout.WEST, panel);
@@ -174,7 +175,7 @@ public class ItemView extends MainMenuView {
         layout.putConstraint(SpringLayout.NORTH, TypeItemlbl, 100, SpringLayout.SOUTH, JScrollPaneTable);
         layout.putConstraint(SpringLayout.WEST, TypeItemcbb, 190, SpringLayout.WEST, panel);
         layout.putConstraint(SpringLayout.NORTH, TypeItemcbb, 100, SpringLayout.SOUTH, JScrollPaneTable);
-        //cot2
+        // cot2
         layout.putConstraint(SpringLayout.WEST, UnitItemlbl, 400, SpringLayout.WEST, panel);
         layout.putConstraint(SpringLayout.NORTH, UnitItemlbl, 20, SpringLayout.SOUTH, JScrollPaneTable);
         layout.putConstraint(SpringLayout.WEST, UnitItemstf, 490, SpringLayout.WEST, panel);
@@ -185,64 +186,68 @@ public class ItemView extends MainMenuView {
         layout.putConstraint(SpringLayout.WEST, PriceItemstf, 490, SpringLayout.WEST, panel);
         layout.putConstraint(SpringLayout.NORTH, PriceItemstf, 60, SpringLayout.SOUTH, JScrollPaneTable);
 
-        //nut
+        // nut
         layout.putConstraint(SpringLayout.WEST, buttonPanel, 100, SpringLayout.WEST, panel);
-        layout.putConstraint(SpringLayout.SOUTH, buttonPanel, -20, SpringLayout.SOUTH, panel); // Đặt panel ở phía dưới cùng của panel chính
+        layout.putConstraint(SpringLayout.SOUTH, buttonPanel, -20, SpringLayout.SOUTH, panel); // Đặt panel ở phía dưới
+                                                                                               // cùng của panel chính
 
         DefaultTableModel model = (DefaultTableModel) ((JTable) JScrollPaneTable.getViewport().getView()).getModel();
         ItemController controller = new ItemController();
         listItem = controller.getItemList();
         this.itemList(listItem);
 
-        JPanel menu = super.menu();
-        add(menu, BorderLayout.WEST);
-        add(panel, BorderLayout.CENTER);
+        JPanel mainPanel = new JPanel(new BorderLayout());
 
-        add(panel);
-        setTitle("Form quản lý");
-        setSize(850, 600);
+        JPanel menu = super.menu();
+        mainPanel.add(menu, BorderLayout.WEST);
+        mainPanel.add(panel, BorderLayout.CENTER);
+
+        add(mainPanel);
+        setTitle("Quản lý dịch vụ");
+        setSize(1200, 700);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setVisible(true);
 
-controller.setButtonListener(AddBtn, new ActionListener() {
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        System.out.println("add thanh cong");
-        String Nameitem = NameItemtf.getText();
-        String Typeitem = (String) TypeItemcbb.getSelectedItem().toString();
-        String Unititem = UnitItemstf.getText();
+        controller.setButtonListener(AddBtn, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("add thanh cong");
+                String Nameitem = NameItemtf.getText();
+                String Typeitem = (String) TypeItemcbb.getSelectedItem().toString();
+                String Unititem = UnitItemstf.getText();
 
-        // Biến cờ để kiểm tra giá trị nhập vào
-        boolean validPrice = false;
-        float Priceitem = 0;
+                // Biến cờ để kiểm tra giá trị nhập vào
+                boolean validPrice = false;
+                float Priceitem = 0;
 
-        // Kiểm tra và yêu cầu người dùng nhập lại nếu giá không phải là số
-        while (!validPrice) {
-            String priceInput = PriceItemstf.getText();
-            try {
-                Priceitem = Float.parseFloat(priceInput);
-                validPrice = true;
-            } catch (NumberFormatException ex) {
-                JOptionPane.showMessageDialog(null, "Vui lòng nhập giá là một số.", "Lỗi", JOptionPane.ERROR_MESSAGE);
-                PriceItemstf.setText(""); // Xóa nội dung không hợp lệ
-                PriceItemstf.requestFocus(); // Đưa con trỏ vào ô giá để người dùng nhập lại
-                return; // Thoát khỏi phương thức nếu giá trị không hợp lệ
+                // Kiểm tra và yêu cầu người dùng nhập lại nếu giá không phải là số
+                while (!validPrice) {
+                    String priceInput = PriceItemstf.getText();
+                    try {
+                        Priceitem = Float.parseFloat(priceInput);
+                        validPrice = true;
+                    } catch (NumberFormatException ex) {
+                        JOptionPane.showMessageDialog(null, "Vui lòng nhập giá là một số.", "Lỗi",
+                                JOptionPane.ERROR_MESSAGE);
+                        PriceItemstf.setText(""); // Xóa nội dung không hợp lệ
+                        PriceItemstf.requestFocus(); // Đưa con trỏ vào ô giá để người dùng nhập lại
+                        return; // Thoát khỏi phương thức nếu giá trị không hợp lệ
+                    }
+                }
+
+                // Tiếp tục thêm mục vào danh sách nếu giá trị hợp lệ
+                ItemModel item = new ItemModel(Nameitem, Typeitem, Unititem, Priceitem);
+                System.out.println("add thanh cong: " + NameItemtf.getText());
+                controller.addItem(item);
+                JOptionPane.showMessageDialog(null, "Item đã được thêm", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                listItem = controller.getItemList();
+                itemList(listItem);
+                clearFields();
+                updateRowCount();
             }
-        }
-
-        // Tiếp tục thêm mục vào danh sách nếu giá trị hợp lệ
-        ItemModel item = new ItemModel(Nameitem, Typeitem, Unititem, Priceitem);
-        System.out.println("add thanh cong: " + NameItemtf.getText());
-        controller.addItem(item);
-        JOptionPane.showMessageDialog(null, "Item đã được thêm", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
-        listItem = controller.getItemList();
-        itemList(listItem);
-        clearFields();
-        updateRowCount();
-    }
         });
 
- controller.setButtonListener(EditBtn, new ActionListener() {
+        controller.setButtonListener(EditBtn, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // Kiểm tra xem có hàng nào được chọn không
@@ -267,7 +272,7 @@ controller.setButtonListener(AddBtn, new ActionListener() {
             }
         });
 
- controller.setButtonListener(SaveBtn, new ActionListener() {
+        controller.setButtonListener(SaveBtn, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // Kiểm tra xem người dùng đã nhập đầy đủ thông tin hay chưa
@@ -277,7 +282,8 @@ controller.setButtonListener(AddBtn, new ActionListener() {
                 String priceitem = PriceItemstf.getText();
 
                 if (nameitem.isEmpty() || typeitem.isEmpty() || unititem.isEmpty() || priceitem.isEmpty()) {
-                    // Nếu có một trường nào đó chưa được điền, hiển thị thông báo và không thực hiện lưu
+                    // Nếu có một trường nào đó chưa được điền, hiển thị thông báo và không thực
+                    // hiện lưu
                     JOptionPane.showMessageDialog(null, "Vui lòng nhập đầy đủ thông tin");
                     return;
                 }
@@ -307,18 +313,19 @@ controller.setButtonListener(AddBtn, new ActionListener() {
                 } catch (NumberFormatException ex) {
                     // Xử lý nếu có lỗi khi chuyển đổi dữ liệu về số nguyên
                     JOptionPane.showMessageDialog(null, "Vui lòng nhập giá trị số cho ô giá ");
-                }updateRowCount();
+                }
+                updateRowCount();
             }
         });
- 
- 
+
         controller.setButtonListener(DeleteBtn, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 int selectedRow = Table.getSelectedRow();
                 if (selectedRow == -1) {
                     // Nếu không có hàng nào được chọn, hiển thị thông báo lỗi
-                    JOptionPane.showMessageDialog(null, "Vui lòng chọn một sản phẩm để xóa", "Lỗi Xóa", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "Vui lòng chọn một sản phẩm để xóa", "Lỗi Xóa",
+                            JOptionPane.ERROR_MESSAGE);
                     return;
                 }
                 // Lấy dữ liệu của hàng được chọn và hiển thị lên các ô text
@@ -336,36 +343,37 @@ controller.setButtonListener(AddBtn, new ActionListener() {
                 PriceItemstf.setText(String.valueOf(price));
 
                 int itemId = (int) Table.getValueAt(selectedRow, 0);
-                int choice = JOptionPane.showConfirmDialog(null, "Bạn có muốn xóa sản phẩm này không ?", "Thông báo", JOptionPane.YES_NO_OPTION);
+                int choice = JOptionPane.showConfirmDialog(null, "Bạn có muốn xóa sản phẩm này không ?", "Thông báo",
+                        JOptionPane.YES_NO_OPTION);
                 if (choice == JOptionPane.YES_OPTION) {
                     controller.deleteItem(itemId);
                     listItem = controller.getItemList();
                     itemList(listItem);
                     clearFields();
-                } updateRowCount();
+                }
+                updateRowCount();
             }
         });
 
-        
         controller.setButtonListener(ClearBtn, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 clearFields();
                 updateRowCount();
-            }            
+            }
         });
-        
-       
 
         controller.setButtonListener(SearchBtn, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String keyword = SearchItemtf.getText().trim(); // Lấy từ khóa tìm kiếm từ JTextField và loại bỏ dấu cách thừa
+                String keyword = SearchItemtf.getText().trim(); // Lấy từ khóa tìm kiếm từ JTextField và loại bỏ dấu
+                                                                // cách thừa
 
                 // Tạo một danh sách tạm thời để lưu kết quả tìm kiếm
                 List<ItemModel> searchResult = new ArrayList<>();
 
-                // Duyệt qua danh sách sách hiện tại và kiểm tra xem từ khóa tìm kiếm có trong sách hay không
+                // Duyệt qua danh sách sách hiện tại và kiểm tra xem từ khóa tìm kiếm có trong
+                // sách hay không
                 for (ItemModel item : listItem) {
                     if (item.getNameItem().toLowerCase().contains(keyword)
                             || item.getTypeItem().toLowerCase().contains(keyword)) {
@@ -379,7 +387,6 @@ controller.setButtonListener(AddBtn, new ActionListener() {
             }
 
         });
-        
 
         Sortcbb.addActionListener(new ActionListener() {
             @Override
@@ -403,60 +410,58 @@ controller.setButtonListener(AddBtn, new ActionListener() {
                 updateRowCount();
             }
         });
-        
-        
-    controller.setButtonListener(ExportBtn, new ActionListener() {
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        XSSFWorkbook workbook = new XSSFWorkbook();
-        XSSFSheet sheet = workbook.createSheet("Danh sách sản phẩm ");
-        XSSFRow row = null;
-        Cell cell = null;
 
-        row = sheet.createRow(0);
+        controller.setButtonListener(ExportBtn, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                XSSFWorkbook workbook = new XSSFWorkbook();
+                XSSFSheet sheet = workbook.createSheet("Danh sách sản phẩm ");
+                XSSFRow row = null;
+                Cell cell = null;
 
-        cell = row.createCell(0, CellType.STRING);
-        cell.setCellValue("ID sản phẩm");
+                row = sheet.createRow(0);
 
-        cell = row.createCell(1, CellType.STRING);
-        cell.setCellValue("Tên sản phẩm");
+                cell = row.createCell(0, CellType.STRING);
+                cell.setCellValue("ID sản phẩm");
 
-        cell = row.createCell(2, CellType.STRING);
-        cell.setCellValue("Loại sản phẩm");
+                cell = row.createCell(1, CellType.STRING);
+                cell.setCellValue("Tên sản phẩm");
 
-        cell = row.createCell(3, CellType.STRING);
-        cell.setCellValue("Đơn vị tính");
+                cell = row.createCell(2, CellType.STRING);
+                cell.setCellValue("Loại sản phẩm");
 
-        cell = row.createCell(4, CellType.STRING);
-        cell.setCellValue("Giá");
+                cell = row.createCell(3, CellType.STRING);
+                cell.setCellValue("Đơn vị tính");
 
-        int rowCount = Table.getRowCount(); // Lấy số lượng hàng trên bảng
-        int columnCount = Table.getColumnCount(); // Lấy số lượng cột trên bảng
+                cell = row.createCell(4, CellType.STRING);
+                cell.setCellValue("Giá");
 
-        // Lặp qua từng hàng của bảng
-        for (int i = 0; i < rowCount; i++) {
-            row = sheet.createRow(i + 1); // Bắt đầu từ hàng 1, vì hàng 0 đã được sử dụng cho tiêu đề
+                int rowCount = Table.getRowCount(); // Lấy số lượng hàng trên bảng
+                int columnCount = Table.getColumnCount(); // Lấy số lượng cột trên bảng
 
-            // Lặp qua từng cột của hàng và thêm dữ liệu vào file Excel
-            for (int j = 0; j < columnCount; j++) {
-                Object value = Table.getValueAt(i, j); // Lấy giá trị của ô tại hàng i, cột j
-                if (value != null) {
-                    cell = row.createCell(j, CellType.STRING);
-                    cell.setCellValue(value.toString());
+                // Lặp qua từng hàng của bảng
+                for (int i = 0; i < rowCount; i++) {
+                    row = sheet.createRow(i + 1); // Bắt đầu từ hàng 1, vì hàng 0 đã được sử dụng cho tiêu đề
+
+                    // Lặp qua từng cột của hàng và thêm dữ liệu vào file Excel
+                    for (int j = 0; j < columnCount; j++) {
+                        Object value = Table.getValueAt(i, j); // Lấy giá trị của ô tại hàng i, cột j
+                        if (value != null) {
+                            cell = row.createCell(j, CellType.STRING);
+                            cell.setCellValue(value.toString());
+                        }
+                    }
+                }
+
+                try (FileOutputStream fos = new FileOutputStream("D://danhsachsanpham.xlsx")) {
+                    workbook.write(fos);
+                    JOptionPane.showMessageDialog(rootPane, "Excel Success!.File path: D://danhsachsanpham.xlsx");
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                    JOptionPane.showMessageDialog(rootPane, "An error occurred while exporting to Excel.");
                 }
             }
-        }
-
-        try (FileOutputStream fos = new FileOutputStream("D://danhsachsanpham.xlsx")) {
-            workbook.write(fos);
-            JOptionPane.showMessageDialog(rootPane, "Excel Success!.File path: D://danhsachsanpham.xlsx");
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            JOptionPane.showMessageDialog(rootPane, "An error occurred while exporting to Excel.");
-        }
-    }
-});
-
+        });
 
     }
 
@@ -466,12 +471,12 @@ controller.setButtonListener(AddBtn, new ActionListener() {
 
         // Thêm dữ liệu mới từ danh sách updatedItemList vào bảng
         for (ItemModel item : updatedItemList) {
-            model.addRow(new Object[]{
-                item.getIdItem(),
-                item.getNameItem(),
-                item.getTypeItem(),
-                item.getUnitItem(),
-                item.getPriceItem()
+            model.addRow(new Object[] {
+                    item.getIdItem(),
+                    item.getNameItem(),
+                    item.getTypeItem(),
+                    item.getUnitItem(),
+                    item.getPriceItem()
             });
         }
     }
@@ -483,12 +488,12 @@ controller.setButtonListener(AddBtn, new ActionListener() {
         UnitItemstf.setText("");
         PriceItemstf.setText("");
     }
-    
+
     public void updateRowCount() {
-    int rowCount = Table.getRowCount();
-    rowCountlbl.setText("Số dòng: " + rowCount);
-}
+        int rowCount = Table.getRowCount();
+        rowCountlbl.setText("Số dòng: " + rowCount);
+    }
 
 }
-//Lớp ItemView chịu trách nhiệm về hiển thị giao diện người 
-//dùng và xử lý các sự kiện từ người dùng như nhấn nút, nhập liệu, v.v.
+// Lớp ItemView chịu trách nhiệm về hiển thị giao diện người
+// dùng và xử lý các sự kiện từ người dùng như nhấn nút, nhập liệu, v.v.

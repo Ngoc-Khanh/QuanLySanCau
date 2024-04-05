@@ -124,6 +124,7 @@ public class DatSanController {
         view.cbThu5.setEnabled(false);
         view.cbThu6.setEnabled(false);
         view.cbThu7.setEnabled(false);
+        view.cbChuNhat.setEnabled(false);
 
         view.btnAdd.setEnabled(true);
         view.btnEdit.setEnabled(true);

@@ -19,7 +19,7 @@ public class DatSanView extends MainMenuView {
     public SpinnerDateModel dateModelBatDau, dateModelKetThuc, timeModelBatDau, timeModelKetThuc;
     public JCheckBox cbThu2, cbThu3, cbThu4, cbThu5, cbThu6, cbThu7, cbChuNhat;
     public JComboBox<String> cmbTrangThai, cmbLoaiSan;
-    public JButton btnAdd, btnEdit, btnDelete, btnCancel, btnSave, btnExcel;
+    public JButton btnAdd, btnEdit, btnDelete, btnCancel, btnSave, btnExcel, btnPhieuDichVu;
     public JTable dataTable;
 
     public DatSanView() {
@@ -32,6 +32,12 @@ public class DatSanView extends MainMenuView {
         // Panel chứa các thành phần nhập liệu
         JPanel inputPanel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
+
+        JLabel header = new JLabel("ĐẶT SÂN");
+        header.setHorizontalAlignment(JLabel.CENTER);
+        header.setFont(new Font("Arial", Font.BOLD, 24));
+        header.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
         gbc.anchor = GridBagConstraints.WEST;
         gbc.insets = new Insets(5, 5, 5, 5);
 
@@ -206,7 +212,10 @@ public class DatSanView extends MainMenuView {
         gbc.gridy = 17;
         btnCancel = new JButton("Hủy");
         inputPanel.add(btnCancel, gbc);
-        
+        gbc.gridx = 1;
+        gbc.gridy = 16;
+        btnPhieuDichVu = new JButton("Excel");
+        inputPanel.add(btnPhieuDichVu, gbc);
 
         // Panel chứa bảng hiển thị dữ liệu
         JPanel dataPanel = new JPanel(new BorderLayout());
@@ -222,6 +231,7 @@ public class DatSanView extends MainMenuView {
 
         // Gộp các panel vào frame chính
         JPanel mainPanel = new JPanel(new BorderLayout());
+        mainPanel.add(header, BorderLayout.NORTH);
         mainPanel.add(inputPanel, BorderLayout.EAST);
         mainPanel.add(dataPanel, BorderLayout.CENTER);
 
