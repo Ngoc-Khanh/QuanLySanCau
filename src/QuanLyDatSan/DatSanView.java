@@ -10,6 +10,8 @@ import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.SwingUtilities;
+
 
 import MainMenu.MainMenuView;
 
@@ -19,12 +21,12 @@ public class DatSanView extends MainMenuView {
     public SpinnerDateModel dateModelBatDau, dateModelKetThuc, timeModelBatDau, timeModelKetThuc;
     public JCheckBox cbThu2, cbThu3, cbThu4, cbThu5, cbThu6, cbThu7, cbChuNhat;
     public JComboBox<String> cmbTrangThai, cmbLoaiSan;
-    public JButton btnAdd, btnEdit, btnDelete, btnCancel, btnSave, btnExcel, btnPhieuDichVu;
+    public JButton btnAdd, btnEdit, btnDelete, btnCancel, btnSave, btnExcel, btnSearch, btnPhieuDonHang;
     public JTable dataTable;
 
     public DatSanView() {
         setTitle("Quản lý đặt sân");
-        setSize(1200, 700);
+        setSize(1200, 800);
         setResizable(true);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -212,10 +214,11 @@ public class DatSanView extends MainMenuView {
         gbc.gridy = 17;
         btnCancel = new JButton("Hủy");
         inputPanel.add(btnCancel, gbc);
-        gbc.gridx = 1;
-        gbc.gridy = 16;
-        btnPhieuDichVu = new JButton("Excel");
-        inputPanel.add(btnPhieuDichVu, gbc);
+        gbc.gridx = 0;
+        gbc.gridy = 18;
+        gbc.gridwidth = GridBagConstraints.REMAINDER;
+        btnPhieuDonHang = new JButton("Thêm đơn hàng");
+        inputPanel.add(btnPhieuDonHang, gbc);
 
         // Panel chứa bảng hiển thị dữ liệu
         JPanel dataPanel = new JPanel(new BorderLayout());
@@ -224,7 +227,7 @@ public class DatSanView extends MainMenuView {
         String[] columnNames = { "Mã DS", "Mã KH", "Mã Sân", "Mã ĐH", "Loại Sân",
                 "Ngày Bắt Đầu", "Ngày Kết Thúc", "Giờ Bắt Đầu", "Giờ Kết Thúc",
                 "Số Giờ Thuê", "Thứ 2", "Thứ 3", "Thứ 4", "Thứ 5", "Thứ 6", "Thứ 7",
-                "Chủ nhật", "Tổng tiền sân" };
+                "Chủ nhật", "Tổng tiền sân"};
         dataTable = new JTable(new DefaultTableModel(columnNames, 0));
         JScrollPane scrollPane = new JScrollPane(dataTable);
         dataPanel.add(scrollPane, BorderLayout.CENTER);
@@ -374,6 +377,12 @@ public class DatSanView extends MainMenuView {
     public void addExcelListener(ActionListener listener) {
         btnExcel.addActionListener(listener);
     }
+
+    // Phương thức này để thêm một trình nghe cho nút Cancel
+    public void addPhieuDonHangListener(ActionListener listener) {
+        btnPhieuDonHang.addActionListener(listener);
+    }
+
 
     // Phương thức này để cập nhật dữ liệu trong bảng từ cơ sở dữ liệu
     public void updateTableData(String[][] data) {

@@ -42,17 +42,23 @@ public class MainMenuView extends JFrame {
         Color foreColor = Color.white;
         Color borderColor = new Color(73, 105, 137);
 
-        // // Set màu button
-        // btnDatSan.setBackground(backColor);
-        // btnDichVu.setBackground(backColor);
+        // Set màu button
+        btnDatSan.setBackground(backColor);
+        btnDichVu.setBackground(backColor);
+        btnKhachHang.setBackground(backColor);
+        btnSan.setBackground(backColor);
 
-        // // Set màu chữ
-        // btnDatSan.setForeground(foreColor);
-        // btnDichVu.setForeground(foreColor);
+        // Set màu chữ
+        btnDatSan.setForeground(foreColor);
+        btnDichVu.setForeground(foreColor);
+        btnKhachHang.setForeground(foreColor);
+        btnSan.setForeground(foreColor);
 
-        // // Set viền buttons
-        // btnDatSan.setBorder(BorderFactory.createLineBorder(borderColor));
-        // btnDichVu.setBorder(BorderFactory.createLineBorder(borderColor));
+        // Set viền buttons
+        btnDatSan.setBorder(BorderFactory.createLineBorder(borderColor));
+        btnDichVu.setBorder(BorderFactory.createLineBorder(borderColor));
+        btnKhachHang.setBorder(BorderFactory.createLineBorder(borderColor));
+        btnSan.setBorder(BorderFactory.createLineBorder(borderColor));
 
         // Logo
         JLabel logo = new JLabel();
@@ -97,8 +103,10 @@ public class MainMenuView extends JFrame {
         
         layout.putConstraint(SpringLayout.NORTH, btnSan, 350, SpringLayout.NORTH, panel);
         layout.putConstraint(SpringLayout.WEST, btnSan, 0, SpringLayout.WEST, panel);
-        setSize(1200, 700);
+
+        setSize(1200, 800);
         setLocationRelativeTo(null);
+        setResizable(true);
 
         btnDatSan.addActionListener(new ActionListener() {
             @Override

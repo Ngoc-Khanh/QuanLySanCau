@@ -198,7 +198,7 @@ public class SanView extends MainMenuView {
 
         add(mainPanel);
         setTitle("Quản lý sân");
-        setSize(1200, 700);
+        setSize(1200, 800);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setVisible(true);
 

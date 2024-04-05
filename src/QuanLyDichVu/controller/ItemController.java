@@ -1,6 +1,8 @@
 package controller;
 
 import Model.ItemModel;
+import PhieuDatHang.controller.ConnectDB;
+
 import java.awt.event.ActionListener;
 import java.sql.Connection;
 import java.sql.PreparedStatement;

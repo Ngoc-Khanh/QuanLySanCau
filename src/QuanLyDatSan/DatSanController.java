@@ -15,6 +15,8 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+import view.PhieuDatHangview;
+
 public class DatSanController {
     private DatSanModel model;
     private DatSanView view;
@@ -37,6 +39,10 @@ public class DatSanController {
         this.view.addCancelListener(new CancelListener());
         // Thêm trình nghe cho nút Excel trên view
         this.view.addExcelListener(new ExcelListener());
+        // Thêm trình nghe cho nút PHiếu đơn hàng trên view
+        this.view.addPhieuDonHangListener(new PhieuDonHangListener());
+
+
 
         // Kết nối đến cơ sở dữ liệu khi tạo đối tượng Controller
         connectToDatabase();
@@ -49,7 +55,7 @@ public class DatSanController {
     private void connectToDatabase() {
         try {
             // Thực hiện kết nối đến cơ sở dữ liệu
-            String URL = "jdbc:mysql://localhost:3306/qlsancau";
+            String URL = "jdbc:mysql://localhost:3306/quynh";
             String USER = "root";
             String PASS = "";
             conn = DriverManager.getConnection(URL, USER, PASS);
@@ -388,6 +394,22 @@ public class DatSanController {
                     JOptionPane.YES_NO_OPTION);
             if (option == JOptionPane.YES_OPTION) {
                 lockFields(); // Mở khóa các TextField và checkbox trước khi thoát
+            }
+        }
+    }
+
+    // Lớp trình nghe cho nút Phiếu đơn hàng
+    class PhieuDonHangListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            int selectedRow = view.dataTable.getSelectedRow();
+            if (selectedRow != -1) {
+                String maDS = (String) view.dataTable.getValueAt(selectedRow, 0);
+                new PhieuDatHangview();
+                displayData();
+            } else {
+                JOptionPane.showMessageDialog(view, "Vui lòng chọn một bản ghi để sửa.", "Lỗi",
+                        JOptionPane.ERROR_MESSAGE);
             }
         }
     }

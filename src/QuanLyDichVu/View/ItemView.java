@@ -204,7 +204,7 @@ public class ItemView extends MainMenuView {
 
         add(mainPanel);
         setTitle("Quản lý dịch vụ");
-        setSize(1200, 700);
+        setSize(1200, 800);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setVisible(true);
 
