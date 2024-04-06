@@ -314,6 +314,8 @@ public class DatSanView extends MainMenuView {
         return soGioThue + " giờ";
     }
 
+    
+
     // Phương thức này để lấy thông tin từ các trường nhập liệu
     public String[] getDatsanInfo() {
         String[] info = new String[18];

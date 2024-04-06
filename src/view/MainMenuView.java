@@ -5,16 +5,18 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
-import view.KhachHangView;
 import controller.DatSanController;
+import controller.HoaDonController;
 import model.DatSanModel;
+import model.HoaDonModel;
 
 public class MainMenuView extends JFrame {
     public SpringLayout layout;
     public JPanel panel;
 
-    JButton btnDatSan, btnDichVu, btnKhachHang, btnSan;
+    JButton btnDatSan, btnDichVu, btnKhachHang, btnSan, btnHoaDon;
 
     public JPanel menu() {
         // Gọi các buttons
@@ -22,6 +24,7 @@ public class MainMenuView extends JFrame {
         btnDichVu = new JButton("Quản lý dịch vụ");
         btnKhachHang = new JButton("Quản lý khách hàng");
         btnSan = new JButton("Quản lý sân");
+        btnHoaDon = new JButton("Quản lý hóa đơn");
 
         // Set chiều dài cho các buttons
         Dimension btnSize = new Dimension(200, 50);
@@ -29,6 +32,7 @@ public class MainMenuView extends JFrame {
         btnDichVu.setPreferredSize(btnSize);
         btnKhachHang.setPreferredSize(btnSize);
         btnSan.setPreferredSize(btnSize);
+        btnHoaDon.setPreferredSize(btnSize);
 
         Color backColor = new Color(0, 114, 60);
         Color foreColor = Color.white;
@@ -39,18 +43,21 @@ public class MainMenuView extends JFrame {
         btnDichVu.setBackground(backColor);
         btnKhachHang.setBackground(backColor);
         btnSan.setBackground(backColor);
+        btnHoaDon.setBackground(backColor);
 
         // Set màu chữ
         btnDatSan.setForeground(foreColor);
         btnDichVu.setForeground(foreColor);
         btnKhachHang.setForeground(foreColor);
         btnSan.setForeground(foreColor);
+        btnHoaDon.setForeground(foreColor);
 
         // Set viền buttons
         btnDatSan.setBorder(BorderFactory.createLineBorder(borderColor));
         btnDichVu.setBorder(BorderFactory.createLineBorder(borderColor));
         btnKhachHang.setBorder(BorderFactory.createLineBorder(borderColor));
         btnSan.setBorder(BorderFactory.createLineBorder(borderColor));
+        btnHoaDon.setBorder(BorderFactory.createLineBorder(borderColor));
 
         // Logo
         JLabel logo = new JLabel();
@@ -68,6 +75,7 @@ public class MainMenuView extends JFrame {
         btnDichVu.setHorizontalAlignment(SwingConstants.LEFT);
         btnKhachHang.setHorizontalAlignment(SwingConstants.LEFT);
         btnSan.setHorizontalAlignment(SwingConstants.LEFT);
+        btnHoaDon.setHorizontalAlignment(SwingConstants.LEFT);
 
         layout = new SpringLayout();
         panel = new JPanel(layout);
@@ -81,6 +89,7 @@ public class MainMenuView extends JFrame {
         panel.add(btnDichVu);
         panel.add(btnKhachHang);
         panel.add(btnSan);
+        panel.add(btnHoaDon);
         panel.add(logo);
         panel.add(squarePanel);
 
@@ -95,6 +104,9 @@ public class MainMenuView extends JFrame {
         
         layout.putConstraint(SpringLayout.NORTH, btnSan, 350, SpringLayout.NORTH, panel);
         layout.putConstraint(SpringLayout.WEST, btnSan, 0, SpringLayout.WEST, panel);
+
+        layout.putConstraint(SpringLayout.NORTH, btnHoaDon, 400, SpringLayout.NORTH, panel);
+        layout.putConstraint(SpringLayout.WEST, btnHoaDon, 0, SpringLayout.WEST, panel);
 
         setSize(1200, 800);
         setLocationRelativeTo(null);
@@ -132,6 +144,15 @@ public class MainMenuView extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 dispose();
                 SwingUtilities.invokeLater(SanView::new);
+            }
+        });
+
+        btnHoaDon.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                HoaDonController controller = new HoaDonController();
+                ArrayList<HoaDonModel> hoaDons = controller.getAllHoadons();
+                SwingUtilities.invokeLater(() -> new HoaDonView(hoaDons));
             }
         });
 

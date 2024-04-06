@@ -1,13 +1,12 @@
 package controller;
 
 import java.sql.*;
+import java.text.SimpleDateFormat;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.Action;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
@@ -23,6 +22,10 @@ import view.DatSanView;
 import view.PhieuDatHangView;
 
 public class DatSanController {
+    private String URL = "jdbc:mysql://localhost:3306/sancau";
+    private String USER = "root";
+    private String PASS = "";
+
     private DatSanModel model;
     private DatSanView view;
     private Connection conn;
@@ -57,10 +60,6 @@ public class DatSanController {
     // Phương thức này để kết nối đến cơ sở dữ liệu
     private void connectToDatabase() {
         try {
-            // Thực hiện kết nối đến cơ sở dữ liệu
-            String URL = "jdbc:mysql://localhost:3306/sancau";
-            String USER = "root";
-            String PASS = "";
             conn = DriverManager.getConnection(URL, USER, PASS);
             st = conn.createStatement();
         } catch (SQLException e) {
@@ -209,7 +208,7 @@ public class DatSanController {
     }
 
     private void saveData(String maDS) {
-        String query = "UPDATE danhsachdatsan SET MaKH = ?, MaSan = ?, LoaiSan = ?, NgayBatDau = ?, NgayKetThuc = ?, GioBatDau = ?, GioKetThuc = ?, Thu_2 = ?, Thu_3 = ?, Thu_4 = ?, Thu_5 = ?, Thu_6 = ?, Thu_7 = ?, ChuNhat = ?, SoGioThue = ? WHERE MaDS = ?";
+        String query = "UPDATE danhsachdatsan SET MaKH = ?, MaSan = ?, LoaiSan = ?, NgayBatDau = ?, NgayKetThuc = ?, GioBatDau = ?, GioKetThuc = ?, Thu_2 = ?, Thu_3 = ?, Thu_4 = ?, Thu_5 = ?, Thu_6 = ?, Thu_7 = ?, ChuNhat = ?, SoGioThue = ?, TongTienSan = ? WHERE MaDS = ?";
         try {
             PreparedStatement st = conn.prepareStatement(query);
             st.setString(1, view.txtMaKH.getText());
@@ -227,13 +226,10 @@ public class DatSanController {
             st.setString(13, view.cbThu7.isSelected() ? "1" : "0");
             st.setString(14, view.cbChuNhat.isSelected() ? "1" : "0");
 
-            // Tính số giờ
-            long milliseconds = ((java.util.Date) view.spGioKetThuc.getValue()).getTime()
-                    - ((java.util.Date) view.spGioBatDau.getValue()).getTime();
-            int hours = (int) (milliseconds / (1000 * 60 * 60));
-            st.setInt(15, hours);
+            st.setInt(15, calculateSoGioThue());
+            st.setFloat(16, calculateTongTienSan());
 
-            st.setString(16, maDS);
+            st.setString(17, maDS);
             st.executeUpdate();
             int rowsUpdated = st.executeUpdate();
             if (rowsUpdated > 0) {
@@ -435,7 +431,6 @@ public class DatSanController {
         }
     }
 
-
     // Phương thức này để xử lý dữ liệu từ ResultSet và chuyển đổi thành mảng 2D
     private String[][] processDataFromResultSet(ResultSet resultSet) throws SQLException {
         ResultSetMetaData metaData = resultSet.getMetaData();
@@ -457,6 +452,57 @@ public class DatSanController {
         dataList.toArray(data);
 
         return data;
+    }
+
+    private int calculateTongTienSan() {
+        int tongTienSan = 0;
+        String querry = "SELECT GiaSan FROM San WHERE MaSan = ?";
+
+        try (Connection conn = DriverManager.getConnection(URL, USER, PASS);
+                PreparedStatement st = conn.prepareStatement(querry)) {
+
+            st.setString(1, view.txtMaSan.getText());
+
+            ResultSet rs = st.executeQuery();
+
+            if (rs.next()) {
+                int giaSan = rs.getInt("GiaSan");
+                int soGioThue = calculateSoGioThue(); // Call your calculateSoGioThue method
+                tongTienSan = giaSan * soGioThue;
+            }
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, "Lỗi: " + ex.getMessage());
+        }
+
+        return tongTienSan;
+    }
+
+    private int calculateSoGioThue() {
+        java.util.Date gioBatDauDate = (java.util.Date) view.spGioBatDau.getValue();
+        java.util.Date gioKetThucDate = (java.util.Date) view.spGioKetThuc.getValue();
+
+        // Format the dates into the desired format (HH:mm)
+        SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm");
+        String gioBatDauStr = dateFormat.format(gioBatDauDate);
+        String gioKetThucStr = dateFormat.format(gioKetThucDate);
+
+        // Phân tách chuỗi thời gian thành giờ và phút
+        String[] gioBatDauParts = gioBatDauStr.split(":");
+        String[] gioKetThucParts = gioKetThucStr.split(":");
+
+        // Chuyển đổi các phần giờ và phút thành số nguyên
+        int gioBatDau = Integer.parseInt(gioBatDauParts[0]);
+        int phutBatDau = Integer.parseInt(gioBatDauParts[1]);
+        int gioKetThuc = Integer.parseInt(gioKetThucParts[0]);
+        int phutKetThuc = Integer.parseInt(gioKetThucParts[1]);
+
+        // Tính số giờ thuê
+        int soGioThue = gioKetThuc - gioBatDau;
+        if (phutKetThuc < phutBatDau) {
+            soGioThue--; // Giảm số giờ thuê nếu phút kết thúc nhỏ hơn phút bắt đầu
+        }
+
+        return soGioThue;
     }
 
     public static void main(String[] args) {

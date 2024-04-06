@@ -32,7 +32,7 @@ public class BaoCaoController {
         model.addColumn("Trạng thái");
 
         // Kết nối đến cơ sở dữ liệu và truy vấn dữ liệu từ bảng "chitiethoadon"
-        try (Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/sancautest", "root", "");
+        try (Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/sancau", "root", "");
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery("SELECT * FROM chitiethoadon")) {
             

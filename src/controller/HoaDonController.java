@@ -13,7 +13,7 @@ public class HoaDonController {
     // Phương thức để lấy tất cả các hóa đơn từ cơ sở dữ liệu
     public ArrayList<HoaDonModel> getAllHoadons() {
         ArrayList<HoaDonModel> hoadons = new ArrayList<>();
-        String url = "jdbc:mysql://localhost:3306/sancautest"; // URL của cơ sở dữ liệu
+        String url = "jdbc:mysql://localhost:3306/sancau"; // URL của cơ sở dữ liệu
         String user = "root"; // Tên người dùng
         String password = ""; // Mật khẩu
 
@@ -47,7 +47,7 @@ public class HoaDonController {
     
 // Phương thức để cập nhật dữ liệu từ bảng phieudathang vào bảng chitiethoadon
 public void updateChiTietHoaDonFromPhieuDatHang(int maDS) {
-    String url = "jdbc:mysql://localhost:3306/sancautest"; // URL của cơ sở dữ liệu
+    String url = "jdbc:mysql://localhost:3306/sancau"; // URL của cơ sở dữ liệu
     String user = "root"; // Tên người dùng
     String password = ""; // Mật khẩu
 
@@ -96,7 +96,7 @@ public void updateChiTietHoaDonFromPhieuDatHang(int maDS) {
     // Phương thức để lấy chi tiết hóa đơn dựa trên mã đặt sân
 public ArrayList<HoaDonModel> getChiTietHoaDonByMaDS(int maDS) {
     ArrayList<HoaDonModel> chiTietHoaDons = new ArrayList<>();
-    String url = "jdbc:mysql://localhost:3306/sancautest"; // URL của cơ sở dữ liệu
+    String url = "jdbc:mysql://localhost:3306/sancau"; // URL của cơ sở dữ liệu
     String user = "root"; // Tên người dùng
     String password = ""; // Mật khẩu
     Connection conn = null;
@@ -151,7 +151,7 @@ public ArrayList<HoaDonModel> getChiTietHoaDonByMaDS(int maDS) {
     
 // Phương thức để cập nhật trạng thái của hóa đơn
 public void updateTrangThaiHoaDon(String maDS, String trangThai) {
-    String url = "jdbc:mysql://localhost:3306/sancautest"; // URL của cơ sở dữ liệu
+    String url = "jdbc:mysql://localhost:3306/sancau"; // URL của cơ sở dữ liệu
     String user = "root"; // Tên người dùng
     String password = ""; // Mật khẩu
 
