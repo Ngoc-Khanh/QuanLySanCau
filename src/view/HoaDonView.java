@@ -14,12 +14,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.*;
 import javax.swing.table.*;
-// import net.sf.jasperreports.engine.JRException;
-// import net.sf.jasperreports.engine.JasperCompileManager;
-// import net.sf.jasperreports.engine.JasperFillManager;
-// import net.sf.jasperreports.engine.JasperPrint;
-// import net.sf.jasperreports.engine.JasperReport;
-// import net.sf.jasperreports.view.JasperViewer;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.view.JasperViewer;
 
 public class HoaDonView extends JFrame {
     private JScrollPane jScrollPaneHoaDonTable;
@@ -86,7 +86,6 @@ public class HoaDonView extends JFrame {
     }
 
     private void initComponents() {
-
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         JPanel panel = new JPanel();
 
@@ -243,26 +242,26 @@ public class HoaDonView extends JFrame {
             }
         });
 
-        // inHoaDonBtn.addActionListener(new ActionListener() {
-        //     public void actionPerformed(ActionEvent e) {
-        //         try {
-        //             // Ví dụ: Lấy mã hóa đơn từ bảng chi tiết hóa đơn được chọn
-        //             int selectedRow = chiTietHoaDonTable.getSelectedRow();
-        //             String MaDS = chiTietHoaDonTable.getValueAt(selectedRow, 0).toString(); // Giả sử mã hóa đơn ở cột
-        //                                                                                     // đầu tiên
-        //             Hashtable map = new Hashtable();
-        //             JasperReport rpt = JasperCompileManager.compileReport("src/hoadon.jrxml");
-        //             map.put("sMaDS", MaDS);
-        //             Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/sancau", "root", "");
-        //             JasperPrint p = JasperFillManager.fillReport(rpt, map, conn);
-        //             JasperViewer.viewReport(p, false);
-        //         } catch (JRException ex) {
-        //             Logger.getLogger(HoaDonView.class.getName()).log(Level.SEVERE, null, ex);
-        //         } catch (SQLException ex) {
-        //             Logger.getLogger(HoaDonView.class.getName()).log(Level.SEVERE, null, ex);
-        //         }
-        //     }
-        // });
+        inHoaDonBtn.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    // Ví dụ: Lấy mã hóa đơn từ bảng chi tiết hóa đơn được chọn
+                    int selectedRow = chiTietHoaDonTable.getSelectedRow();
+                    String MaDS = chiTietHoaDonTable.getValueAt(selectedRow, 0).toString(); // Giả sử mã hóa đơn ở cột
+                                                                                            // đầu tiên
+                    Hashtable map = new Hashtable();
+                    JasperReport rpt = JasperCompileManager.compileReport("src/hoadon.jrxml");
+                    map.put("sMaDS", MaDS);
+                    Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/sancau", "root", "");
+                    JasperPrint p = JasperFillManager.fillReport(rpt, map, conn);
+                    JasperViewer.viewReport(p, false);
+                } catch (JRException ex) {
+                    Logger.getLogger(HoaDonView.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (SQLException ex) {
+                    Logger.getLogger(HoaDonView.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        });
 
         // Thêm xử lý sự kiện cho nút tìm kiếm
         // Thêm xử lý sự kiện cho nút tìm kiếm
