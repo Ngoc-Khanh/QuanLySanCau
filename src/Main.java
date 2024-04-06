@@ -1,6 +1,6 @@
-import DangNhap.DangNhapController;
-import DangNhap.DangNhapModel;
-import DangNhap.DangNhapView;
+import controller.DangNhapController;
+import model.DangNhapModel;
+import view.DangNhapView;
 
 public class Main {
     public static void main(String[] args) {
