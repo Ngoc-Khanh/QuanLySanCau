@@ -1,6 +1,8 @@
 package view;
 
 import java.util.regex.*;
+
+import controller.DatSanController;
 import controller.PhieuDatHangController;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -15,8 +17,17 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import model.ItemModel2;
 import model.PhieuDatHangModel;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+
 
 public class PhieuDatHangView extends JFrame {
+    private static final String URL = "jdbc:mysql://localhost:3306/sancau";
+    private static final String USER = "root";
+    private static final String PASS = "";
+
     private int madatsan = 0;
     private JTable menuTable, orderTable;
     private JButton themButton, xoaButton, timKiemButton, trongButton, tongTienButton;
@@ -40,7 +51,7 @@ public class PhieuDatHangView extends JFrame {
     }
 
     public void formPhieuDatHang() throws SQLException {
-        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
         // Create menu table
         menuTableModel = new DefaultTableModel(new Object[][] {},
@@ -74,6 +85,7 @@ public class PhieuDatHangView extends JFrame {
         timKiemField.setPreferredSize(new Dimension(200, 25));
         JLabel tongTienLabel = new JLabel("Tổng tiền:");
         JTextField tongTienField = new JTextField(10);
+        tongTienField.setText("0");
         JLabel nameJLabel = new JLabel("PHIẾU ĐẶT HÀNG");
         Font font = new Font(nameJLabel.getFont().getName(), Font.BOLD, 25); // Đặt font chữ
         nameJLabel.setFont(font); // Áp dụng font cho JLabel
@@ -344,8 +356,25 @@ public class PhieuDatHangView extends JFrame {
                 }
                 tongTienField.setText(String.valueOf(tongTien));
                 System.out.println("da tinh tong tien!");
-            }
 
+                // Kết nối tới cơ sở dữ liệu và cập nhật giá trị tổng tiền dịch vụ
+                try (Connection conn = DriverManager.getConnection(URL, USER, PASS)) {
+                    String updateQuery = "UPDATE danhsachdatsan SET TongTienDV = ? WHERE MaDS = '" + madatsan + "'";
+                    
+                    PreparedStatement updateStatement = conn.prepareStatement(updateQuery);
+                    updateStatement.setFloat(1, tongTien);
+
+                    int rowsAffected = updateStatement.executeUpdate();
+                    if (rowsAffected > 0) {
+                        System.out.println("Đã cập nhật tổng tiền dịch vụ vào cơ sở dữ liệu.");
+                    } else {
+                        System.out.println("Không có dòng nào được cập nhật.");
+                    }
+                } catch (SQLException ex) {
+                    JOptionPane.showMessageDialog(null, "Lỗi khi cập nhật tổng tiền dịch vụ: " + ex.getMessage());
+                }
+                refreshTable();
+            }
         });
 
         // Thêm listener cho cửa sổ
@@ -395,5 +424,9 @@ public class PhieuDatHangView extends JFrame {
                     phieudathang.getSoLuong(),
                     phieudathang.getThanhTien(), });
         }
+    }
+
+    private void refreshTable() {
+        DatSanController.displayData(); // Gọi lại phương thức hiển thị dữ liệu để làm mới bảng
     }
 }

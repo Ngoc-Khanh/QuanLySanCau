@@ -13,10 +13,6 @@ import javax.swing.JTextField;
 import model.ItemModel2;
 import model.PhieuDatHangModel;
 
-/**
- *
- * @author Windows
- */
 public class PhieuDatHangController {
 
     private Connection conn;
@@ -31,10 +27,13 @@ public class PhieuDatHangController {
 
     public List<ItemModel2> getItemList() {
         List<ItemModel2> itemList = new ArrayList<>();
-        try (Connection conn = ConnectDB.getConnection(); PreparedStatement preparedStatement = conn.prepareStatement("SELECT *FROM dichvu"); ResultSet resultSet = preparedStatement.executeQuery()) {
+        try (Connection conn = ConnectDB.getConnection();
+                PreparedStatement preparedStatement = conn.prepareStatement("SELECT *FROM dichvu");
+                ResultSet resultSet = preparedStatement.executeQuery()) {
 
             while (resultSet.next()) {
-                ItemModel2 item = new ItemModel2(resultSet.getInt(1), resultSet.getString(2), resultSet.getString(3), resultSet.getString(4),
+                ItemModel2 item = new ItemModel2(resultSet.getInt(1), resultSet.getString(2), resultSet.getString(3),
+                        resultSet.getString(4),
                         resultSet.getFloat(5));
                 itemList.add(item);
             }
@@ -44,25 +43,25 @@ public class PhieuDatHangController {
         return itemList;
     }
 
-
- 
-public List<PhieuDatHangModel> getPhieuDatHangList(int maDS) {
-    List<PhieuDatHangModel> phieudathangList = new ArrayList<>();
-    try (Connection conn = ConnectDB.getConnection(); PreparedStatement preparedStatement = conn.prepareStatement("SELECT * FROM phieudathang WHERE MaDS = ?")) {
-        preparedStatement.setInt(1, maDS);
-        try (ResultSet resultSet1 = preparedStatement.executeQuery()) {
-            while (resultSet1.next()) {
-                PhieuDatHangModel phieudathang = new PhieuDatHangModel(resultSet1.getInt(1), resultSet1.getInt(2), resultSet1.getString(3), resultSet1.getFloat(4), resultSet1.getInt(5), resultSet1.getFloat(6));
-                phieudathangList.add(phieudathang);
+    public List<PhieuDatHangModel> getPhieuDatHangList(int maDS) {
+        List<PhieuDatHangModel> phieudathangList = new ArrayList<>();
+        try (Connection conn = ConnectDB.getConnection();
+                PreparedStatement preparedStatement = conn
+                        .prepareStatement("SELECT * FROM phieudathang WHERE MaDS = ?")) {
+            preparedStatement.setInt(1, maDS);
+            try (ResultSet resultSet1 = preparedStatement.executeQuery()) {
+                while (resultSet1.next()) {
+                    PhieuDatHangModel phieudathang = new PhieuDatHangModel(resultSet1.getInt(1), resultSet1.getInt(2),
+                            resultSet1.getString(3), resultSet1.getFloat(4), resultSet1.getInt(5),
+                            resultSet1.getFloat(6));
+                    phieudathangList.add(phieudathang);
+                }
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-    } catch (SQLException e) {
-        e.printStackTrace();
+        return phieudathangList;
     }
-    return phieudathangList;
-}
-
-
 
     public void addPhieuDatHang(int maDS, int maDV, String tenDV, float donGia, int soLuong, float thanhTien) {
         conn = ConnectDB.getConnection();
@@ -97,73 +96,70 @@ public List<PhieuDatHangModel> getPhieuDatHangList(int maDS) {
     }
 
     public void updatePhieuDatHang(int maDV, int soLuongMoi, float thanhTienMoi, int madatsan) {
-    conn = ConnectDB.getConnection();
-    String sql = "UPDATE phieudathang SET SoLuong = ?, ThanhTien = ? WHERE MaDV = ? AND MaDS = ?";
-    try {
-        PreparedStatement stmt = conn.prepareStatement(sql);
-        stmt.setInt(1, soLuongMoi);
-        stmt.setFloat(2, thanhTienMoi);
-        stmt.setInt(3, maDV);
-        stmt.setInt(4, madatsan);
-
-        int rowsAffected = stmt.executeUpdate();
-        if (rowsAffected > 0) {
-            System.out.println("Cập nhật phiếu đặt hàng thành công!");
-        } else {
-            System.out.println("Cập nhật phiếu đặt hàng thất bại!");
-        }
-    } catch (SQLException e) {
-        e.printStackTrace();
-    } finally {
-        // Đóng kết nối
+        conn = ConnectDB.getConnection();
+        String sql = "UPDATE phieudathang SET SoLuong = ?, ThanhTien = ? WHERE MaDV = ? AND MaDS = ?";
         try {
-            if (conn != null) {
-                conn.close();
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, soLuongMoi);
+            stmt.setFloat(2, thanhTienMoi);
+            stmt.setInt(3, maDV);
+            stmt.setInt(4, madatsan);
+
+            int rowsAffected = stmt.executeUpdate();
+            if (rowsAffected > 0) {
+                System.out.println("Cập nhật phiếu đặt hàng thành công!");
+            } else {
+                System.out.println("Cập nhật phiếu đặt hàng thất bại!");
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            // Đóng kết nối
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+
+    public void deletePhieuDatHang(int madv, int madatsan) {
+        conn = ConnectDB.getConnection();
+        String sql = "DELETE FROM phieudathang WHERE MaDV = ? AND MaDS = ?";
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, madv);
+            stmt.setInt(2, madatsan);
+            int rowsAffected = stmt.executeUpdate();
+            if (rowsAffected > 0) {
+                System.out.println("Xóa thành công!");
+            } else {
+                System.out.println("Không có dữ liệu nào được xóa!");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void deleteAllPhieuDatHang(int madatsan) {
+        conn = ConnectDB.getConnection();
+        try {
+            // Xóa toàn bộ dữ liệu phiếu đặt hàng từ cơ sở dữ liệu
+            String sql = "DELETE FROM phieudathang WHERE maDS = ?";
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1, madatsan);
+            pstmt.executeUpdate();
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
     }
-}
-
-
-public void deletePhieuDatHang(int madv, int madatsan) {
-    conn = ConnectDB.getConnection();
-    String sql = "DELETE FROM phieudathang WHERE MaDV = ? AND MaDS = ?";
-    try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-        stmt.setInt(1, madv);
-        stmt.setInt(2, madatsan);
-        int rowsAffected = stmt.executeUpdate();
-        if (rowsAffected > 0) {
-            System.out.println("Xóa thành công!");
-        } else {
-            System.out.println("Không có dữ liệu nào được xóa!");
-        }
-    } catch (SQLException e) {
-        e.printStackTrace();
-    }
-}
-
-
-public void deleteAllPhieuDatHang(int madatsan) {
-    conn = ConnectDB.getConnection();
-    try {
-        // Xóa toàn bộ dữ liệu phiếu đặt hàng từ cơ sở dữ liệu
-        String sql = "DELETE FROM phieudathang WHERE maDS = ?";
-        PreparedStatement pstmt = conn.prepareStatement(sql);
-        pstmt.setInt(1, madatsan);
-        pstmt.executeUpdate();
-    } catch (SQLException ex) {
-        ex.printStackTrace();
-    }
-}
-
-
-
 
     public void getMaDSFromDatabase(int maDS, JTextField maDSField) {
         // Kết nối tới cơ sở dữ liệu
-        try (Connection conn = ConnectDB.getConnection(); PreparedStatement preparedStatement = conn.prepareStatement("SELECT * FROM danhsachdatsan WHERE MaDS = ?")) {
+        try (Connection conn = ConnectDB.getConnection();
+                PreparedStatement preparedStatement = conn
+                        .prepareStatement("SELECT * FROM danhsachdatsan WHERE MaDS = ?")) {
             preparedStatement.setInt(1, maDS); // Thiết lập giá trị của tham số MaDS trong câu lệnh SQL
             try (ResultSet rs = preparedStatement.executeQuery()) {
                 if (rs.next()) {
@@ -178,6 +174,5 @@ public void deleteAllPhieuDatHang(int madatsan) {
             e.printStackTrace();
         }
     }
-    
 
 }

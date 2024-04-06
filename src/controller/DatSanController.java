@@ -27,9 +27,9 @@ public class DatSanController {
     private String PASS = "";
 
     private DatSanModel model;
-    private DatSanView view;
+    private static DatSanView view;
     private Connection conn;
-    private Statement st;
+    private static Statement st;
 
     public DatSanController(DatSanModel model, DatSanView view) {
         this.model = model;
@@ -68,7 +68,7 @@ public class DatSanController {
     }
 
     // Phương thức này để hiển thị dữ liệu từ cơ sở dữ liệu lên bảng
-    private void displayData() {
+    public static void displayData() {
         ResultSet resultSet = getDataFromDatabase();
         try {
             // Xử lý resultSet để lấy dữ liệu từ cơ sở dữ liệu
@@ -82,7 +82,7 @@ public class DatSanController {
     }
 
     // Phương thức này để thực hiện truy vấn dữ liệu từ cơ sở dữ liệu
-    private ResultSet getDataFromDatabase() {
+    private static ResultSet getDataFromDatabase() {
         ResultSet rs = null;
         try {
             String query = "SELECT * FROM danhsachdatsan";
@@ -208,7 +208,7 @@ public class DatSanController {
     }
 
     private void saveData(String maDS) {
-        String query = "UPDATE danhsachdatsan SET MaKH = ?, MaSan = ?, LoaiSan = ?, NgayBatDau = ?, NgayKetThuc = ?, GioBatDau = ?, GioKetThuc = ?, Thu_2 = ?, Thu_3 = ?, Thu_4 = ?, Thu_5 = ?, Thu_6 = ?, Thu_7 = ?, ChuNhat = ?, SoGioThue = ?, TongTienSan = ? WHERE MaDS = ?";
+        String query = "UPDATE danhsachdatsan SET MaKH = ?, MaSan = ?, LoaiSan = ?, NgayBatDau = ?, NgayKetThuc = ?, GioBatDau = ?, GioKetThuc = ?, Thu_2 = ?, Thu_3 = ?, Thu_4 = ?, Thu_5 = ?, Thu_6 = ?, Thu_7 = ?, ChuNhat = ?, SoGioThue = ?, TongTienSan = ?, TongTienDV = ? WHERE MaDS = ?";
         try {
             PreparedStatement st = conn.prepareStatement(query);
             st.setString(1, view.txtMaKH.getText());
@@ -228,8 +228,9 @@ public class DatSanController {
 
             st.setInt(15, calculateSoGioThue());
             st.setFloat(16, calculateTongTienSan());
+            st.setFloat(17, calculateTongDichVu(maDS));
 
-            st.setString(17, maDS);
+            st.setString(18, maDS);
             st.executeUpdate();
             int rowsUpdated = st.executeUpdate();
             if (rowsUpdated > 0) {
@@ -311,49 +312,49 @@ public class DatSanController {
             cell.setCellValue("Mã sân");
 
             cell = row.createCell(3, CellType.STRING);
-            cell.setCellValue("Mã đặt hàng");
-
-            cell = row.createCell(4, CellType.STRING);
             cell.setCellValue("Loại sân");
 
-            cell = row.createCell(5, CellType.STRING);
+            cell = row.createCell(4, CellType.STRING);
             cell.setCellValue("Ngày bắt đầu");
 
-            cell = row.createCell(6, CellType.STRING);
+            cell = row.createCell(5, CellType.STRING);
             cell.setCellValue("Ngày kết thúc");
 
-            cell = row.createCell(7, CellType.STRING);
+            cell = row.createCell(6, CellType.STRING);
             cell.setCellValue("Giờ bắt đầu");
 
-            cell = row.createCell(8, CellType.STRING);
+            cell = row.createCell(7, CellType.STRING);
             cell.setCellValue("Giờ kết thúc");
 
-            cell = row.createCell(9, CellType.STRING);
+            cell = row.createCell(8, CellType.STRING);
             cell.setCellValue("Số giờ thuê");
 
-            cell = row.createCell(10, CellType.STRING);
+            cell = row.createCell(9, CellType.STRING);
             cell.setCellValue("Thứ 2");
 
-            cell = row.createCell(11, CellType.STRING);
+            cell = row.createCell(10, CellType.STRING);
             cell.setCellValue("Thứ 3");
 
-            cell = row.createCell(12, CellType.STRING);
+            cell = row.createCell(11, CellType.STRING);
             cell.setCellValue("Thứ 4");
 
-            cell = row.createCell(13, CellType.STRING);
+            cell = row.createCell(12, CellType.STRING);
             cell.setCellValue("Thứ 5");
 
-            cell = row.createCell(14, CellType.STRING);
+            cell = row.createCell(13, CellType.STRING);
             cell.setCellValue("Thứ 6");
 
-            cell = row.createCell(15, CellType.STRING);
+            cell = row.createCell(14, CellType.STRING);
             cell.setCellValue("Thứ 7");
 
-            cell = row.createCell(16, CellType.STRING);
+            cell = row.createCell(15, CellType.STRING);
             cell.setCellValue("Chủ nhật");
+            
+            cell = row.createCell(16, CellType.STRING);
+            cell.setCellValue("Tổng tiền sân");
 
             cell = row.createCell(17, CellType.STRING);
-            cell.setCellValue("Trạng thái");
+            cell.setCellValue("Tổng tiền dịch vụ");
 
             int rowCount = view.dataTable.getRowCount(); // Lấy số lượng hàng trên bảng
             int columnCount = view.dataTable.getColumnCount(); // Lấy số lượng cột trên bảng
@@ -372,9 +373,9 @@ public class DatSanController {
                 }
             }
 
-            try (FileOutputStream fos = new FileOutputStream("D://danhsachdatsan.xlsx")) {
+            try (FileOutputStream fos = new FileOutputStream("C://Users//Admin//OneDrive - tuyenquang.edu.vn//Study//javas//QuanLySanCau//src//Excel//danhsachdatsan.xlsx")) {
                 workbook.write(fos);
-                JOptionPane.showMessageDialog(null, "Excel Success!.File path: D://danhsachdatsan.xlsx");
+                JOptionPane.showMessageDialog(null, "Excel Success!.File path: C://Users//Admin//OneDrive - tuyenquang.edu.vn//Study//javas//QuanLySanCau//src//Excel//danhsachdatsan.xlsx");
             } catch (Exception ex) {
                 ex.printStackTrace();
                 JOptionPane.showMessageDialog(null, "An error occurred while exporting to Excel.");
@@ -400,18 +401,20 @@ public class DatSanController {
         public void actionPerformed(ActionEvent e) {
             int selectedRow = view.dataTable.getSelectedRow(); // Get the index of the selected row
             if (selectedRow != -1) { // If a row is selected
-                int MaDS = Integer.parseInt((String) view.dataTable.getValueAt(selectedRow, 0)); // Get MaDS from the selected row
+                int MaDS = Integer.parseInt((String) view.dataTable.getValueAt(selectedRow, 0)); // Get MaDS from the
+                                                                                                 // selected row
                 // Do something with maDS, for example, open a new window to display the invoice
                 PhieuDatHangView phieuDatHangView = new PhieuDatHangView(MaDS); // Pass MaDS to the constructor
                 phieuDatHangView.setVisible(true); // Show the view
             } else {
-                JOptionPane.showMessageDialog(view, "Please select a record to create an order form.", "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(view, "Please select a record to create an order form.", "Error",
+                        JOptionPane.ERROR_MESSAGE);
             }
         }
     }
 
     // Phương thức này để xử lý dữ liệu từ ResultSet và chuyển đổi thành mảng 2D
-    private String[][] processDataFromResultSet(ResultSet resultSet) throws SQLException {
+    private static String[][] processDataFromResultSet(ResultSet resultSet) throws SQLException {
         ResultSetMetaData metaData = resultSet.getMetaData();
         int columnCount = metaData.getColumnCount();
         List<String[]> dataList = new ArrayList<>();
@@ -454,6 +457,27 @@ public class DatSanController {
         }
 
         return tongTienSan;
+    }
+
+    private float calculateTongDichVu(String maDS) {
+        float tongTienDV = 0;
+        String querry = "SELECT SUM(ThanhTien) AS TongThanhTien FROM phieudathang WHERE MaDS = ?";
+        try (Connection conn = DriverManager.getConnection(URL, USER, PASS);
+                PreparedStatement st = conn.prepareStatement(querry)) {
+            st.setString(1, maDS);
+
+            ResultSet rs = st.executeQuery();
+
+            if (rs.next()) {
+                tongTienDV = rs.getFloat("TongThanhTien");
+            } else {
+                // Nếu không có MaDS trong bảng phieudathang, gán mặc định bằng 0
+                tongTienDV = 0;
+            }
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, "Lỗi: " + ex.getMessage());
+        }
+        return tongTienDV;
     }
 
     private int calculateSoGioThue() {

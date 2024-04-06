@@ -42,6 +42,7 @@ public class HoaDonView extends JFrame {
     private JButton thanhToanBtn; // Thêm nút "Thanh toán"
     private JButton inHoaDonBtn;
     private JButton thongKeBtn;
+    private JButton capNhatBtn;
     private JLabel timKiemLabel;
     private JTextField timKiemField;
     private JButton timKiemBtn;
@@ -125,6 +126,8 @@ public class HoaDonView extends JFrame {
         timKiemLabel = new JLabel("Tìm kiếm theo mã đặt sân:");
         timKiemField = new JTextField(10);
         timKiemBtn = new JButton("Tìm kiếm");
+        capNhatBtn = new JButton("Cập nhật"); // Thêm nút "Thanh toán"
+
 
         hoaDonTable.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
@@ -162,6 +165,8 @@ public class HoaDonView extends JFrame {
         panel.add(timKiemLabel);
         panel.add(timKiemField);
         panel.add(timKiemBtn);
+        panel.add(capNhatBtn);
+
 
         layout.putConstraint(SpringLayout.WEST, jScrollPaneHoaDonTable, 500, SpringLayout.WEST, panel);
         layout.putConstraint(SpringLayout.NORTH, jScrollPaneHoaDonTable, 60, SpringLayout.NORTH, panel);
@@ -196,7 +201,7 @@ public class HoaDonView extends JFrame {
         layout.putConstraint(SpringLayout.WEST, tongTienField, 270, SpringLayout.WEST, panel);
         layout.putConstraint(SpringLayout.NORTH, tongTienField, 250, SpringLayout.NORTH, panel);
 
-        layout.putConstraint(SpringLayout.WEST, lapHoaDonBtn, 180, SpringLayout.WEST, panel);
+        layout.putConstraint(SpringLayout.WEST, lapHoaDonBtn, 140, SpringLayout.WEST, panel);
         layout.putConstraint(SpringLayout.NORTH, lapHoaDonBtn, 330, SpringLayout.NORTH, panel);
         layout.putConstraint(SpringLayout.WEST, thanhToanBtn, 570, SpringLayout.WEST, panel); // Thêm vị trí của nút
                                                                                               // "Thanh toán"
@@ -214,6 +219,9 @@ public class HoaDonView extends JFrame {
         layout.putConstraint(SpringLayout.WEST, timKiemBtn, 1410, SpringLayout.WEST, panel);
         layout.putConstraint(SpringLayout.NORTH, timKiemBtn, 10, SpringLayout.NORTH, panel);
 
+        layout.putConstraint(SpringLayout.WEST, capNhatBtn, 280, SpringLayout.WEST, panel);
+        layout.putConstraint(SpringLayout.NORTH, capNhatBtn, 330, SpringLayout.NORTH, panel);
+
         add(panel);
         setTitle("Quản lý hóa đơn");
         setSize(800, 500);
@@ -225,6 +233,26 @@ public class HoaDonView extends JFrame {
                 hienThiChiTietHoaDon();
             }
         });
+
+        capNhatBtn.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                // Gọi phương thức cập nhật hóa đơn từ bảng danhsachdatsan
+                HoaDonController hoaDonController = new HoaDonController();
+                hoaDonController.insertDataFromDanhsachdatsanToHoadon();
+                // Cập nhật hiển thị bảng hóa đơn
+        DefaultTableModel model = (DefaultTableModel) hoaDonTable.getModel();
+        model.setRowCount(0); // Xóa hết dữ liệu hiện tại
+        
+        // Lấy dữ liệu hóa đơn từ cơ sở dữ liệu và hiển thị lên bảng hóa đơn
+        ArrayList<HoaDonModel> hoadons = hoaDonController.getAllHoadons();
+        for (HoaDonModel hoadon : hoadons) {
+            model.addRow(new Object[]{
+                hoadon.getMaDS(), hoadon.getMaKH(), hoadon.getTongTienSan(), hoadon.getTongTienDV(), hoadon.getTongTien()
+            });
+        }
+    }
+});
+
 
         // Bắt sự kiện khi nhấn vào nút "Thanh toán"
         thanhToanBtn.addActionListener(new ActionListener() {

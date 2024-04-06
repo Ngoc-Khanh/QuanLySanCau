@@ -44,6 +44,36 @@ public class HoaDonController {
 
         return hoadons;
     }
+
+    public void insertDataFromDanhsachdatsanToHoadon() {
+        String url = "jdbc:mysql://localhost:3306/sancau";
+        String user = "root";
+        String password = "";
+    
+        try {
+            Connection conn = DriverManager.getConnection(url, user, password);
+    
+            // Thêm dữ liệu mới từ bảng danhsachdatsan vào bảng hoadon
+            String insertSql = "INSERT INTO hoadon (MaDS, MaKH, TongTienSan, TongTienDV, TongTien) " +
+                    "SELECT ds.MaDS, ds.MaKH, ds.TongTienSan, ds.TongTienDV, (ds.TongTienSan + ds.TongTienDV) AS TongTien " +
+                    "FROM danhsachdatsan ds";
+            PreparedStatement insertStatement = conn.prepareStatement(insertSql);
+    
+            // Thực thi truy vấn cập nhật
+            int rowsUpdated = insertStatement.executeUpdate();
+    
+            if (rowsUpdated > 0) {
+                System.out.println("Chèn dữ liệu từ bảng danhsachdatsan vào bảng hoadon thành công.");
+            } else {
+                System.out.println("Không có dữ liệu mới từ bảng danhsachdatsan được chèn vào bảng hoadon.");
+            }
+    
+            // Đóng kết nối
+            conn.close();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
     
 // Phương thức để cập nhật dữ liệu từ bảng phieudathang vào bảng chitiethoadon
 public void updateChiTietHoaDonFromPhieuDatHang(int maDS) {
@@ -149,7 +179,7 @@ public ArrayList<HoaDonModel> getChiTietHoaDonByMaDS(int maDS) {
 }
 
     
-// Phương thức để cập nhật trạng thái của hóa đơn
+// // Phương thức để cập nhật trạng thái của hóa đơn
 public void updateTrangThaiHoaDon(String maDS, String trangThai) {
     String url = "jdbc:mysql://localhost:3306/sancau"; // URL của cơ sở dữ liệu
     String user = "root"; // Tên người dùng
@@ -180,6 +210,33 @@ public void updateTrangThaiHoaDon(String maDS, String trangThai) {
         ex.printStackTrace();
     }
 }
+
+// public void updateTrangThaiDaThanhToan(String maDS) {
+//     // Tương tự như phương thức updateTrangThaiHoaDon nhưng cập nhật trạng thái thành "đã thanh toán"
+//     String url = "jdbc:mysql://localhost:3306/sancau";
+//     String user = "root";
+//     String password = "";
+
+//     try {
+//         Connection conn = DriverManager.getConnection(url, user, password);
+
+//         String updateSql = "UPDATE chitiethoadon SET TrangThai = 'đã thanh toán' WHERE MaDS = ?";
+//         PreparedStatement updateStatement = conn.prepareStatement(updateSql);
+//         updateStatement.setString(1, maDS);
+
+//         int rowsUpdated = updateStatement.executeUpdate();
+
+//         if (rowsUpdated > 0) {
+//             System.out.println("Cập nhật trạng thái hóa đơn thành công.");
+//         } else {
+//             System.out.println("Không có hóa đơn nào được cập nhật.");
+//         }
+
+//         conn.close();
+//     } catch (SQLException ex) {
+//         ex.printStackTrace();
+//     }
+// }
 
 
 

@@ -76,7 +76,7 @@ public class DatSanView extends MainMenuView {
         gbc.gridx = 0;
         gbc.gridy = 4;
         inputPanel.add(new JLabel("Loại Sân:"), gbc);
-        cmbLoaiSan = new JComboBox<>(new String[] { "VIP", "SVIP", "SSVIP" });
+        cmbLoaiSan = new JComboBox<>();
         gbc.gridx = 1;
         gbc.gridy = 4;
         gbc.fill = GridBagConstraints.HORIZONTAL;

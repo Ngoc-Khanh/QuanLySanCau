@@ -206,6 +206,7 @@ public class ItemView extends MainMenuView {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setVisible(true);
 
+
         controller.setButtonListener(AddBtn, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -232,7 +233,6 @@ public class ItemView extends MainMenuView {
                         return; // Thoát khỏi phương thức nếu giá trị không hợp lệ
                     }
                 }
-
                 // Tiếp tục thêm mục vào danh sách nếu giá trị hợp lệ
                 ItemModel item = new ItemModel(Nameitem, Typeitem, Unititem, Priceitem);
                 System.out.println("add thanh cong: " + NameItemtf.getText());
@@ -266,8 +266,11 @@ public class ItemView extends MainMenuView {
                     UnitItemstf.setText(unitItem);
                     PriceItemstf.setText(String.valueOf(priceItem));
                     itemId = (int) Table.getValueAt(selectedRow, 0);
-                }
-            }
+                }AddBtn.setEnabled(false);
+                DeleteBtn.setEnabled(false);
+                ExportBtn.setEnabled(false);
+                
+            }  
         });
 
         controller.setButtonListener(SaveBtn, new ActionListener() {
@@ -313,6 +316,9 @@ public class ItemView extends MainMenuView {
                     JOptionPane.showMessageDialog(null, "Vui lòng nhập giá trị số cho ô giá ");
                 }
                 updateRowCount();
+                AddBtn.setEnabled(true);
+                DeleteBtn.setEnabled(true);
+                ExportBtn.setEnabled(true);
             }
         });
 
@@ -364,7 +370,7 @@ public class ItemView extends MainMenuView {
         controller.setButtonListener(SearchBtn, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String keyword = SearchItemtf.getText().trim(); // Lấy từ khóa tìm kiếm từ JTextField và loại bỏ dấu
+                String keyword = SearchItemtf.getText().trim().toLowerCase(); // Lấy từ khóa tìm kiếm từ JTextField và loại bỏ dấu
                                                                 // cách thừa
 
                 // Tạo một danh sách tạm thời để lưu kết quả tìm kiếm
@@ -375,11 +381,9 @@ public class ItemView extends MainMenuView {
                 for (ItemModel item : listItem) {
                     if (item.getNameItem().toLowerCase().contains(keyword)
                             || item.getTypeItem().toLowerCase().contains(keyword)) {
-                        // Nếu tìm thấy từ khóa trong tên sách, thêm sách vào danh sách kết quả
                         searchResult.add(item);
                     }
                 }
-                // Hiển thị kết quả tìm kiếm trên bảng
                 itemList(searchResult);
                 updateRowCount();
             }

@@ -160,7 +160,7 @@ public class DatSanAddView extends JFrame {
     // Phương thức thêm dữ liệu vào cơ sở dữ liệu
     private void addDataToDatabase() {
         // Chuẩn bị câu lệnh SQL để thêm dữ liệu vào bảng
-        String querry = "INSERT INTO danhsachdatsan (MaKH, MaSan, LoaiSan, NgayBatDau, NgayKetThuc, GioBatDau, GioKetThuc, Thu_2, Thu_3, Thu_4, Thu_5, Thu_6, Thu_7, ChuNhat, SoGioThue, TongTienSan) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String querry = "INSERT INTO danhsachdatsan (MaKH, MaSan, LoaiSan, NgayBatDau, NgayKetThuc, GioBatDau, GioKetThuc, Thu_2, Thu_3, Thu_4, Thu_5, Thu_6, Thu_7, ChuNhat, SoGioThue, TongTienSan, TongTienDV) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = DriverManager.getConnection(URL, USER, PASS)) {
             PreparedStatement st = conn.prepareStatement(querry);
@@ -185,6 +185,7 @@ public class DatSanAddView extends JFrame {
 
             st.setInt(15, calculateSoGioThue());
             st.setFloat(16, calculateTongTienSan());
+            st.setFloat(17, 0);
             int rowsInserted = st.executeUpdate();
             if (rowsInserted > 0) {
                 JOptionPane.showMessageDialog(null, "Thêm dữ liệu thành công");
