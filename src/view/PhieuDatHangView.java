@@ -1,6 +1,7 @@
 package view;
 
 import java.util.regex.*;
+import controller.PhieuDatHangController;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
@@ -14,10 +15,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import model.ItemModel2;
 import model.PhieuDatHangModel;
-import controller.PhieuDatHangController;
 
 public class PhieuDatHangView extends JFrame {
-
+    private int madatsan = 0;
     private JTable menuTable, orderTable;
     private JButton themButton, xoaButton, timKiemButton, trongButton, tongTienButton;
     private DefaultTableModel menuTableModel, orderTableModel;
@@ -26,9 +26,10 @@ public class PhieuDatHangView extends JFrame {
     private JScrollPane menuScrollPane, orderScrollPane;
 
     int itemId;
-    int madatsan;// giả sử đang thêm dịch vụ của mã đặt sân 1
+    // int madatsan=1 ;//giả sử đang thêm dịch vụ của mã đặt sân 1
 
-    public PhieuDatHangView() {
+    public PhieuDatHangView(int madatsan) {
+        this.madatsan = madatsan;
         try {
             formPhieuDatHang();
         } catch (SQLException ex) {
@@ -39,7 +40,7 @@ public class PhieuDatHangView extends JFrame {
     }
 
     public void formPhieuDatHang() throws SQLException {
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
         // Create menu table
         menuTableModel = new DefaultTableModel(new Object[][] {},

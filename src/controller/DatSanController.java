@@ -394,40 +394,19 @@ public class DatSanController {
         }
     }
 
-    // Lớp trình nghe cho nút Phiếu đơn hàng
+    // Lớp trình nghe cho nút Phiếu đặt hàng
     class PhieuDonHangListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            int selectedRow = view.dataTable.getSelectedRow();
-            if (selectedRow != -1) {
-                String maDS = (String) view.dataTable.getValueAt(selectedRow, 0);
-                JTextField maDSField = new JTextField();
-                // Gọi phương thức để lấy mã đặt sân từ cơ sở dữ liệu và hiển thị nó trong
-                // trường mã đặt sân
-                getDataFromDatabase(Integer.parseInt(maDS), maDSField);
-                new PhieuDatHangView(); // Truyền mã đặt sân vào form thêm dịch vụ
+            int selectedRow = view.dataTable.getSelectedRow(); // Get the index of the selected row
+            if (selectedRow != -1) { // If a row is selected
+                int MaDS = Integer.parseInt((String) view.dataTable.getValueAt(selectedRow, 0)); // Get MaDS from the selected row
+                // Do something with maDS, for example, open a new window to display the invoice
+                PhieuDatHangView phieuDatHangView = new PhieuDatHangView(MaDS); // Pass MaDS to the constructor
+                phieuDatHangView.setVisible(true); // Show the view
             } else {
-                JOptionPane.showMessageDialog(view, "Vui lòng chọn một bản ghi để sửa.", "Lỗi",
-                        JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(view, "Please select a record to create an order form.", "Error", JOptionPane.ERROR_MESSAGE);
             }
-        }
-    }
-
-    private void getDataFromDatabase(int maDS, JTextField maDSField) {
-        try {
-            String query = "SELECT MaDatSan FROM danhsachdatsan WHERE MaDS = ?";
-            PreparedStatement preparedStatement = conn.prepareStatement(query);
-            preparedStatement.setInt(1, maDS);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()) {
-                String maDatSan = resultSet.getString("MaDatSan");
-                maDSField.setText(maDatSan);
-            } else {
-                JOptionPane.showMessageDialog(view, "Không tìm thấy mã đặt sân tương ứng.", "Lỗi",
-                        JOptionPane.ERROR_MESSAGE);
-            }
-        } catch (SQLException ex) {
-            ex.printStackTrace();
         }
     }
 

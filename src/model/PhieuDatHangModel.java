@@ -1,6 +1,5 @@
 package model;
 
-
 public class PhieuDatHangModel {
 
     private int maDH;
@@ -14,10 +13,10 @@ public class PhieuDatHangModel {
 
     }
 
-    public PhieuDatHangModel(int maDH, int maDV, String tenDV, float donGia, int soLuong, float thanhTien) {
+    public PhieuDatHangModel(int maDH,int maDV,String tenDV, float donGia,int soLuong, float thanhTien) {
         this.maDH = maDH;
         this.maDV = maDV;
-        this.tenDV = tenDV;
+        this.tenDV=tenDV;
         this.soLuong = soLuong;
         this.donGia = donGia;
         this.thanhTien = thanhTien;
@@ -38,7 +37,7 @@ public class PhieuDatHangModel {
     public void setMaDV(int maDV) {
         this.maDV = maDV;
     }
-
+    
     public String getTenDV() {
         return tenDV;
     }
