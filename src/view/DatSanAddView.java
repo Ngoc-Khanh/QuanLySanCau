@@ -6,6 +6,9 @@ import java.util.Calendar;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -63,8 +66,10 @@ public class DatSanAddView extends JFrame {
 
         txtMaKH = new JTextField(10);
         txtMaSan = new JTextField(10);
+        txtMaSan.setEditable(false);
 
-        cmbLoaiSan = new JComboBox<>(new String[] { "VIP", "SVIP", "SSVIP" });
+        cmbLoaiSan = new JComboBox<>();
+        loadLoaiSanData();
         cbThu2 = new JCheckBox("Thứ 2");
         cbThu3 = new JCheckBox("Thứ 3");
         cbThu4 = new JCheckBox("Thứ 4");
@@ -104,10 +109,10 @@ public class DatSanAddView extends JFrame {
         panel.setLayout(new GridLayout(0, 2));
         panel.add(MaKH);
         panel.add(txtMaKH);
-        panel.add(MaSan);
-        panel.add(txtMaSan);
         panel.add(LoaiSan);
         panel.add(cmbLoaiSan);
+        panel.add(MaSan);
+        panel.add(txtMaSan);
         panel.add(NgayBatDau);
         panel.add(spNgayBatDau);
         panel.add(NgayKetThuc);
@@ -130,6 +135,7 @@ public class DatSanAddView extends JFrame {
         panel.add(btnCancel);
         panel.add(btnSubmit);
 
+        addListeners();
         setVisible(true);
 
         // Gán sự kiện cho nút "Submit"
@@ -155,6 +161,56 @@ public class DatSanAddView extends JFrame {
                 dispose();
             }
         });
+    }
+
+    private void addListeners() {
+        cmbLoaiSan.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                if (e.getStateChange() == ItemEvent.SELECTED) {
+                    String selectedLoaiSan = (String) cmbLoaiSan.getSelectedItem();
+                    String maSan = getMaSanByLoaiSan(selectedLoaiSan);
+                    txtMaSan.setText(maSan);
+                }
+            }
+        });
+    }
+
+    private String getMaSanByLoaiSan(String loaiSan) {
+        String maSan = "";
+        String query = "SELECT MaSan FROM san WHERE LoaiSan = ?";
+        try (Connection conn = DriverManager.getConnection(URL, USER, PASS);
+                PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setString(1, loaiSan);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    maSan = rs.getString("MaSan");
+                }
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Lỗi: " + ex.getMessage());
+        }
+        return maSan;
+    }
+
+    private void loadLoaiSanData() {
+        String querry = "SELECT DISTINCT LoaiSan FROM san";
+        try (Connection conn = DriverManager.getConnection(URL, USER, PASS);
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(querry)) {
+
+            // Xóa các mục hiện tại trong cmbLoaiSan
+            cmbLoaiSan.removeAllItems();
+
+            // Lặp qua kết quả truy vấn và thêm dữ liệu vào cmbLoaiSan
+            while (rs.next()) {
+                String loaiSan = rs.getString("LoaiSan");
+                cmbLoaiSan.addItem(loaiSan);
+            }
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, "Lỗi: " + ex.getMessage());
+        }
     }
 
     // Phương thức thêm dữ liệu vào cơ sở dữ liệu

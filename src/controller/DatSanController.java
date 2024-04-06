@@ -118,7 +118,6 @@ public class DatSanController {
 
     private void lockFields() {
         view.txtMaKH.setEditable(false);
-        view.txtMaSan.setEditable(false);
         view.cmbLoaiSan.setEnabled(false);
         view.spNgayBatDau.setEnabled(false);
         view.spNgayKetThuc.setEnabled(false);
@@ -143,7 +142,6 @@ public class DatSanController {
 
     private void unlockFields() {
         view.txtMaKH.setEditable(true);
-        view.txtMaSan.setEditable(true);
         view.cmbLoaiSan.setEnabled(true);
         view.spNgayBatDau.setEnabled(true);
         view.spNgayKetThuc.setEnabled(true);

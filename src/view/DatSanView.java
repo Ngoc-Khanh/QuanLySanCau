@@ -2,6 +2,14 @@ package view;
 
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -13,6 +21,10 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.SwingUtilities;
 
 public class DatSanView extends MainMenuView {
+    private String URL = "jdbc:mysql://localhost:3306/sancau";
+    private String USER = "root";
+    private String PASS = "";
+
     public JTextField txtMaDS, txtMaKH, txtMaSan, txtSoGioThue, txtTongTienSan;
     public JSpinner spNgayBatDau, spNgayKetThuc, spGioBatDau, spGioKetThuc;
     public SpinnerDateModel dateModelBatDau, dateModelKetThuc, timeModelBatDau, timeModelKetThuc;
@@ -77,6 +89,7 @@ public class DatSanView extends MainMenuView {
         gbc.gridy = 4;
         inputPanel.add(new JLabel("Loại Sân:"), gbc);
         cmbLoaiSan = new JComboBox<>();
+        loadLoaiSanData();
         gbc.gridx = 1;
         gbc.gridy = 4;
         gbc.fill = GridBagConstraints.HORIZONTAL;
@@ -219,7 +232,7 @@ public class DatSanView extends MainMenuView {
         String[] columnNames = { "Mã DS", "Mã KH", "Mã Sân", "Loại Sân",
                 "Ngày Bắt Đầu", "Ngày Kết Thúc", "Giờ Bắt Đầu", "Giờ Kết Thúc",
                 "Số Giờ Thuê", "Thứ 2", "Thứ 3", "Thứ 4", "Thứ 5", "Thứ 6", "Thứ 7",
-                "Chủ nhật", "Tổng tiền sân", "Tổng tiền dịch vụ"};
+                "Chủ nhật", "Tổng tiền sân", "Tổng tiền dịch vụ" };
         dataTable = new JTable(new DefaultTableModel(columnNames, 0));
         JScrollPane scrollPane = new JScrollPane(dataTable);
         dataPanel.add(scrollPane, BorderLayout.CENTER);
@@ -255,7 +268,10 @@ public class DatSanView extends MainMenuView {
 
         btnSave.setEnabled(false);
         btnCancel.setEnabled(false);
+        dataTable.setDefaultEditor(Object.class, null);
+        dataTable.getTableHeader().setReorderingAllowed(false);
 
+        addListeners();
         add(mainPanel);
         setVisible(true);
 
@@ -288,6 +304,57 @@ public class DatSanView extends MainMenuView {
                 }
             }
         });
+
+    }
+
+    private void addListeners() {
+        cmbLoaiSan.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                if (e.getStateChange() == ItemEvent.SELECTED) {
+                    String selectedLoaiSan = (String) cmbLoaiSan.getSelectedItem();
+                    String maSan = getMaSanByLoaiSan(selectedLoaiSan);
+                    txtMaSan.setText(maSan);
+                }
+            }
+        });
+    }
+
+    private String getMaSanByLoaiSan(String loaiSan) {
+        String maSan = "";
+        String query = "SELECT MaSan FROM san WHERE LoaiSan = ?";
+        try (Connection conn = DriverManager.getConnection(URL, USER, PASS);
+                PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setString(1, loaiSan);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    maSan = rs.getString("MaSan");
+                }
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Lỗi: " + ex.getMessage());
+        }
+        return maSan;
+    }
+
+    private void loadLoaiSanData() {
+        String querry = "SELECT DISTINCT LoaiSan FROM san";
+        try (Connection conn = DriverManager.getConnection(URL, USER, PASS);
+                Statement stmt = conn.createStatement();
+                ResultSet rs = stmt.executeQuery(querry)) {
+
+            // Xóa các mục hiện tại trong cmbLoaiSan
+            cmbLoaiSan.removeAllItems();
+
+            // Lặp qua kết quả truy vấn và thêm dữ liệu vào cmbLoaiSan
+            while (rs.next()) {
+                String loaiSan = rs.getString("LoaiSan");
+                cmbLoaiSan.addItem(loaiSan);
+            }
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, "Lỗi: " + ex.getMessage());
+        }
     }
 
     private String calculateSoGioThue(int selectedRow) {
@@ -313,8 +380,6 @@ public class DatSanView extends MainMenuView {
         // Hiển thị số giờ thuê kèm đơn vị
         return soGioThue + " giờ";
     }
-
-    
 
     // Phương thức này để lấy thông tin từ các trường nhập liệu
     public String[] getDatsanInfo() {
@@ -373,7 +438,6 @@ public class DatSanView extends MainMenuView {
     public void addPhieuDonHangListener(ActionListener listener) {
         btnPhieuDonHang.addActionListener(listener);
     }
-
 
     // Phương thức này để cập nhật dữ liệu trong bảng từ cơ sở dữ liệu
     public void updateTableData(String[][] data) {
