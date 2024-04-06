@@ -1,19 +1,21 @@
 package view;
 
-import controller.BaoCaoController;
-import controller.HoaDonController;
-import model.HoaDonModel;
 import java.awt.*;
 import java.awt.event.*;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.*;
 import javax.swing.table.*;
+
+import controller.BaoCaoController;
+import controller.HoaDonController;
+import model.HoaDonModel;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperFillManager;
@@ -40,23 +42,24 @@ public class HoaDonView extends JFrame {
     private JTextField tongTienField;
     private JButton lapHoaDonBtn;
     private JButton thanhToanBtn; // Thêm nút "Thanh toán"
-    private JButton inHoaDonBtn;
-    private JButton thongKeBtn;
+    private JButton inHoaDonBtn; 
+    private JButton thongKeBtn; 
     private JButton capNhatBtn;
     private JLabel timKiemLabel;
     private JTextField timKiemField;
     private JButton timKiemBtn;
+    
 
     private String[] hoaDonColumnNames = new String[] {
-            "Mã đặt sân", "Mã khách hàng", "Tổng tiền sân",
-            "Tổng tiền dịch vụ", "Tổng tiền"
+        "Mã đặt sân", "Mã khách hàng",  "Tổng tiền sân",
+        "Tổng tiền dịch vụ", "Tổng tiền"
     };
 
     private String[] chiTietHoaDonColumnNames = new String[] {
-            "Mã đặt sân", "Mã sân", "Mã dịch vụ", "Mã khách hàng",
-            "Tên khách hàng", "Số điện thoại", "Tên sân", "Số giờ thuê", "Giá sân",
-            "Tên dịch vụ", "Số lượng", "Giá",
-            "Tổng tiền sân", "Tổng tiền dịch vụ", "Tổng tiền", "Ngày lập", "Trạng thái"
+         "Mã đặt sân", "Mã sân", "Mã dịch vụ", "Mã khách hàng", 
+        "Tên khách hàng", "Số điện thoại", "Tên sân", "Số giờ thuê", "Giá sân", 
+        "Tên dịch vụ", "Số lượng", "Giá", 
+        "Tổng tiền sân", "Tổng tiền dịch vụ", "Tổng tiền", "Ngày lập", "Trạng thái"
     };
 
     private ArrayList<HoaDonModel> danhSachChiTietHoaDon = new ArrayList<>();
@@ -72,21 +75,22 @@ public class HoaDonView extends JFrame {
     private void displayDataInTable(ArrayList<HoaDonModel> hoaDons) {
         DefaultTableModel model = (DefaultTableModel) hoaDonTable.getModel();
         for (HoaDonModel hoaDon : hoaDons) {
-            model.addRow(new Object[] {
-                    hoaDon.getMaDS(), hoaDon.getMaKH(),
-                    hoaDon.getTongTienSan(), hoaDon.getTongTienDV(), hoaDon.getTongTien(),
+            model.addRow(new Object[]{
+                hoaDon.getMaDS(), hoaDon.getMaKH(),
+                hoaDon.getTongTienSan(), hoaDon.getTongTienDV(), hoaDon.getTongTien(),
             });
         }
     }
 
     private void customizeTableFont() {
         Font font = new Font("Arial", Font.PLAIN, 14);
-        JTableHeader header = hoaDonTable.getTableHeader();
+JTableHeader header = hoaDonTable.getTableHeader();
         header.setFont(font);
         hoaDonTable.setFont(font);
     }
 
     private void initComponents() {
+        
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         JPanel panel = new JPanel();
 
@@ -95,11 +99,12 @@ public class HoaDonView extends JFrame {
         jScrollPaneHoaDonTable = new JScrollPane(hoaDonTable);
         jScrollPaneHoaDonTable.setPreferredSize(new Dimension(1000, 300));
 
+
         chiTietHoaDonTable = new JTable();
         chiTietHoaDonTable.setModel(new DefaultTableModel(new Object[][] {}, chiTietHoaDonColumnNames));
         jScrollPaneChiTietHoaDonTable = new JScrollPane(chiTietHoaDonTable);
         jScrollPaneChiTietHoaDonTable.setPreferredSize(new Dimension(1500, 300));
-
+        
         JLabel titleLabel = new JLabel("Quản lý hóa đơn ");
         titleLabel.setFont(new Font("Arial", Font.BOLD, 30));
         panel.add(titleLabel);
@@ -123,11 +128,10 @@ public class HoaDonView extends JFrame {
         thanhToanBtn = new JButton("Thanh toán"); // Thêm nút "Thanh toán"
         inHoaDonBtn = new JButton("In hóa đơn"); // Thêm nút "Thanh toán"
         thongKeBtn = new JButton("Thống kê"); // Thêm nút "Thanh toán"
+        capNhatBtn = new JButton("Cập nhật"); // Thêm nút "Thanh toán"
         timKiemLabel = new JLabel("Tìm kiếm theo mã đặt sân:");
         timKiemField = new JTextField(10);
-        timKiemBtn = new JButton("Tìm kiếm");
-        capNhatBtn = new JButton("Cập nhật"); // Thêm nút "Thanh toán"
-
+        timKiemBtn = new JButton("Tìm kiếm");   
 
         hoaDonTable.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
@@ -138,7 +142,7 @@ public class HoaDonView extends JFrame {
                     maKHField.setText(hoaDonTable.getValueAt(row, 1).toString());
                     tongTienSanField.setText(hoaDonTable.getValueAt(row, 2).toString());
                     tongTienDVField.setText(hoaDonTable.getValueAt(row, 3).toString());
-                    tongTienField.setText(hoaDonTable.getValueAt(row, 4).toString());
+tongTienField.setText(hoaDonTable.getValueAt(row, 4).toString());
                 }
             }
         });
@@ -167,12 +171,11 @@ public class HoaDonView extends JFrame {
         panel.add(timKiemBtn);
         panel.add(capNhatBtn);
 
-
         layout.putConstraint(SpringLayout.WEST, jScrollPaneHoaDonTable, 500, SpringLayout.WEST, panel);
         layout.putConstraint(SpringLayout.NORTH, jScrollPaneHoaDonTable, 60, SpringLayout.NORTH, panel);
         layout.putConstraint(SpringLayout.WEST, jScrollPaneChiTietHoaDonTable, 10, SpringLayout.WEST, panel);
         layout.putConstraint(SpringLayout.NORTH, jScrollPaneChiTietHoaDonTable, 400, SpringLayout.NORTH, panel);
-
+        
         layout.putConstraint(SpringLayout.WEST, titleLabel, 140, SpringLayout.WEST, panel);
         layout.putConstraint(SpringLayout.NORTH, titleLabel, 30, SpringLayout.NORTH, panel);
 
@@ -180,47 +183,46 @@ public class HoaDonView extends JFrame {
         layout.putConstraint(SpringLayout.NORTH, maDSLabel, 130, SpringLayout.NORTH, panel);
         layout.putConstraint(SpringLayout.WEST, maDSField, 270, SpringLayout.WEST, panel);
         layout.putConstraint(SpringLayout.NORTH, maDSField, 130, SpringLayout.NORTH, panel);
-
+        
         layout.putConstraint(SpringLayout.WEST, maKHLabel, 150, SpringLayout.WEST, panel);
         layout.putConstraint(SpringLayout.NORTH, maKHLabel, 160, SpringLayout.NORTH, panel);
         layout.putConstraint(SpringLayout.WEST, maKHField, 270, SpringLayout.WEST, panel);
         layout.putConstraint(SpringLayout.NORTH, maKHField, 160, SpringLayout.NORTH, panel);
-
+        
         layout.putConstraint(SpringLayout.WEST, tongTienSanLabel, 150, SpringLayout.WEST, panel);
         layout.putConstraint(SpringLayout.NORTH, tongTienSanLabel, 190, SpringLayout.NORTH, panel);
         layout.putConstraint(SpringLayout.WEST, tongTienSanField, 270, SpringLayout.WEST, panel);
         layout.putConstraint(SpringLayout.NORTH, tongTienSanField, 190, SpringLayout.NORTH, panel);
-
+        
         layout.putConstraint(SpringLayout.WEST, tongTienDVLabel, 150, SpringLayout.WEST, panel);
         layout.putConstraint(SpringLayout.NORTH, tongTienDVLabel, 220, SpringLayout.NORTH, panel);
-        layout.putConstraint(SpringLayout.WEST, tongTienDVField, 270, SpringLayout.WEST, panel);
+layout.putConstraint(SpringLayout.WEST, tongTienDVField, 270, SpringLayout.WEST, panel);
         layout.putConstraint(SpringLayout.NORTH, tongTienDVField, 220, SpringLayout.NORTH, panel);
-
-        layout.putConstraint(SpringLayout.WEST, tongTienLabel, 150, SpringLayout.WEST, panel);
+        
+        layout.putConstraint(SpringLayout.WEST, tongTienLabel,150 , SpringLayout.WEST, panel);
         layout.putConstraint(SpringLayout.NORTH, tongTienLabel, 250, SpringLayout.NORTH, panel);
         layout.putConstraint(SpringLayout.WEST, tongTienField, 270, SpringLayout.WEST, panel);
         layout.putConstraint(SpringLayout.NORTH, tongTienField, 250, SpringLayout.NORTH, panel);
-
+        
         layout.putConstraint(SpringLayout.WEST, lapHoaDonBtn, 140, SpringLayout.WEST, panel);
         layout.putConstraint(SpringLayout.NORTH, lapHoaDonBtn, 330, SpringLayout.NORTH, panel);
-        layout.putConstraint(SpringLayout.WEST, thanhToanBtn, 570, SpringLayout.WEST, panel); // Thêm vị trí của nút
-                                                                                              // "Thanh toán"
-        layout.putConstraint(SpringLayout.NORTH, thanhToanBtn, 720, SpringLayout.NORTH, panel); // Thêm vị trí của nút
-                                                                                                // "Thanh toán"
+        layout.putConstraint(SpringLayout.WEST, thanhToanBtn, 570, SpringLayout.WEST, panel); // Thêm vị trí của nút "Thanh toán"
+        layout.putConstraint(SpringLayout.NORTH, thanhToanBtn, 720, SpringLayout.NORTH, panel); // Thêm vị trí của nút "Thanh toán"
         layout.putConstraint(SpringLayout.WEST, inHoaDonBtn, 700, SpringLayout.WEST, panel);
         layout.putConstraint(SpringLayout.NORTH, inHoaDonBtn, 720, SpringLayout.NORTH, panel);
         layout.putConstraint(SpringLayout.WEST, thongKeBtn, 830, SpringLayout.WEST, panel);
         layout.putConstraint(SpringLayout.NORTH, thongKeBtn, 720, SpringLayout.NORTH, panel);
-
+        
         layout.putConstraint(SpringLayout.WEST, timKiemLabel, 1130, SpringLayout.WEST, panel);
         layout.putConstraint(SpringLayout.NORTH, timKiemLabel, 13, SpringLayout.NORTH, panel);
         layout.putConstraint(SpringLayout.WEST, timKiemField, 1290, SpringLayout.WEST, panel);
         layout.putConstraint(SpringLayout.NORTH, timKiemField, 13, SpringLayout.NORTH, panel);
         layout.putConstraint(SpringLayout.WEST, timKiemBtn, 1410, SpringLayout.WEST, panel);
         layout.putConstraint(SpringLayout.NORTH, timKiemBtn, 10, SpringLayout.NORTH, panel);
-
+        
         layout.putConstraint(SpringLayout.WEST, capNhatBtn, 280, SpringLayout.WEST, panel);
         layout.putConstraint(SpringLayout.NORTH, capNhatBtn, 330, SpringLayout.NORTH, panel);
+
 
         add(panel);
         setTitle("Quản lý hóa đơn");
@@ -233,13 +235,14 @@ public class HoaDonView extends JFrame {
                 hienThiChiTietHoaDon();
             }
         });
+        
 
-        capNhatBtn.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                // Gọi phương thức cập nhật hóa đơn từ bảng danhsachdatsan
-                HoaDonController hoaDonController = new HoaDonController();
-                hoaDonController.insertDataFromDanhsachdatsanToHoadon();
-                // Cập nhật hiển thị bảng hóa đơn
+capNhatBtn.addActionListener(new ActionListener() {
+    public void actionPerformed(ActionEvent e) {
+        // Gọi phương thức cập nhật hóa đơn từ bảng danhsachdatsan
+        HoaDonController hoaDonController = new HoaDonController();
+        hoaDonController.insertDataFromDanhsachdatsanToHoadon();
+// Cập nhật hiển thị bảng hóa đơn
         DefaultTableModel model = (DefaultTableModel) hoaDonTable.getModel();
         model.setRowCount(0); // Xóa hết dữ liệu hiện tại
         
@@ -252,156 +255,142 @@ public class HoaDonView extends JFrame {
         }
     }
 });
+        
+        
+
 
 
         // Bắt sự kiện khi nhấn vào nút "Thanh toán"
-        thanhToanBtn.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                int selectedRow = hoaDonTable.getSelectedRow();
-                if (selectedRow != -1) {
-                    String maDS = hoaDonTable.getValueAt(selectedRow, 0).toString();
-                    HoaDonController controller = new HoaDonController();
-                    controller.updateTrangThaiHoaDon(maDS, "Đã thanh toán");
-                    JOptionPane.showMessageDialog(null, "Đã thanh toán hóa đơn có mã đặt sân: " + maDS);
-                    refreshHoaDonTable(); // Làm mới lại bảng hóa đơn
-                } else {
-                    JOptionPane.showMessageDialog(null, "Vui lòng chọn một hóa đơn để thanh toán.");
-                }
-            }
+thanhToanBtn.addActionListener(new ActionListener() {
+    public void actionPerformed(ActionEvent e) {
+        int selectedRow = hoaDonTable.getSelectedRow();
+        if (selectedRow != -1) {
+            String maDS = hoaDonTable.getValueAt(selectedRow, 0).toString();
+            HoaDonController controller = new HoaDonController();
+            controller.updateTrangThaiHoaDon(maDS, "Đã thanh toán");
+            JOptionPane.showMessageDialog(null, "Đã thanh toán hóa đơn có mã đặt sân: " + maDS);
+        } else {
+            JOptionPane.showMessageDialog(null, "Vui lòng chọn một hóa đơn để thanh toán.");
+        }
+    }
+});
+
+inHoaDonBtn.addActionListener(new ActionListener() {
+    public void actionPerformed(ActionEvent e) {
+        try {
+        // Ví dụ: Lấy mã hóa đơn từ bảng chi tiết hóa đơn được chọn
+        int selectedRow = chiTietHoaDonTable.getSelectedRow();
+        String MaDS = chiTietHoaDonTable.getValueAt(selectedRow, 0).toString(); // Giả sử mã hóa đơn ở cột đầu tiên           
+            Hashtable map = new Hashtable();
+            JasperReport rpt = JasperCompileManager.compileReport("src/hoadon.jrxml");
+            map.put("sMaDS",MaDS);
+            Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/sancau", "root", "");
+            JasperPrint p = JasperFillManager.fillReport(rpt, map, conn);
+            JasperViewer.viewReport(p, false);
+        } catch (JRException ex) {
+            Logger.getLogger(HoaDonView.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(HoaDonView.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
         });
 
-        inHoaDonBtn.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    // Ví dụ: Lấy mã hóa đơn từ bảng chi tiết hóa đơn được chọn
-                    int selectedRow = chiTietHoaDonTable.getSelectedRow();
-                    String MaDS = chiTietHoaDonTable.getValueAt(selectedRow, 0).toString(); // Giả sử mã hóa đơn ở cột
-                                                                                            // đầu tiên
-                    Hashtable map = new Hashtable();
-                    JasperReport rpt = JasperCompileManager.compileReport("src/hoadon.jrxml");
-                    map.put("sMaDS", MaDS);
-                    Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/sancau", "root", "");
-                    JasperPrint p = JasperFillManager.fillReport(rpt, map, conn);
-                    JasperViewer.viewReport(p, false);
-                } catch (JRException ex) {
-                    Logger.getLogger(HoaDonView.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (SQLException ex) {
-                    Logger.getLogger(HoaDonView.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-        });
 
         // Thêm xử lý sự kiện cho nút tìm kiếm
-        // Thêm xử lý sự kiện cho nút tìm kiếm
-        timKiemBtn.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                String maDS = timKiemField.getText().trim();
-                DefaultTableModel model = (DefaultTableModel) hoaDonTable.getModel();
-                TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(model);
-                hoaDonTable.setRowSorter(sorter);
+           // Thêm xử lý sự kiện cho nút tìm kiếm
+timKiemBtn.addActionListener(new ActionListener() {
+    public void actionPerformed(ActionEvent e) {
+        String maDS = timKiemField.getText().trim();
+        DefaultTableModel model = (DefaultTableModel) hoaDonTable.getModel();
+        TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(model);
+        hoaDonTable.setRowSorter(sorter);
+        
+        if (maDS.isEmpty()) {
+sorter.setRowFilter(null); // Hiển thị lại tất cả hóa đơn nếu trường tìm kiếm trống
+        } else {
+            ArrayList<RowFilter<Object, Object>> filters = new ArrayList<>();
+            filters.add(RowFilter.regexFilter(maDS, 0)); // 0 là chỉ số cột mã đặt sân
 
-                if (maDS.isEmpty()) {
-                    sorter.setRowFilter(null); // Hiển thị lại tất cả hóa đơn nếu trường tìm kiếm trống
-                } else {
-                    ArrayList<RowFilter<Object, Object>> filters = new ArrayList<>();
-                    filters.add(RowFilter.regexFilter(maDS, 0)); // 0 là chỉ số cột mã đặt sân
-
-                    sorter.setRowFilter(RowFilter.andFilter(filters));
-                }
-            }
-        });
-
-        thongKeBtn.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                // Tạo một instance của BaoCaoView khi nhấn vào nút "Thống kê"
-                BaoCaoController baoCaoController = new BaoCaoController();
-                DefaultTableModel chiTietHoaDons = baoCaoController.getAllChiTietHoaDons();
-                BaoCaoView baoCaoView = new BaoCaoView(chiTietHoaDons);
-                baoCaoView.setVisible(true); // Hiển thị form BaoCaoView
-            }
-        });
-
-        // Ví dụ: Sử dụng NonEditableCellEditor cho tất cả các cột trong hoaDonTable
-        for (int i = 0; i < hoaDonTable.getColumnCount(); i++) {
-            hoaDonTable.setDefaultEditor(hoaDonTable.getColumnClass(i), new NonEditableCellEditor(new JTextField()));
+            sorter.setRowFilter(RowFilter.andFilter(filters));
         }
+    }
+});
 
-        // Tương tự cho chiTietHoaDonTable
-        for (int i = 0; i < chiTietHoaDonTable.getColumnCount(); i++) {
-            chiTietHoaDonTable.setDefaultEditor(chiTietHoaDonTable.getColumnClass(i),
-                    new NonEditableCellEditor(new JTextField()));
-        }
+
+thongKeBtn.addActionListener(new ActionListener() {
+    public void actionPerformed(ActionEvent e) {
+        // Tạo một instance của BaoCaoView khi nhấn vào nút "Thống kê"
+        BaoCaoController baoCaoController = new BaoCaoController();
+        DefaultTableModel chiTietHoaDons = baoCaoController.getAllChiTietHoaDons();
+        BaoCaoView baoCaoView = new BaoCaoView(chiTietHoaDons);
+        baoCaoView.setVisible(true); // Hiển thị form BaoCaoView
+    }
+});
+
+
+// Ví dụ: Sử dụng NonEditableCellEditor cho tất cả các cột trong hoaDonTable
+for (int i = 0; i < hoaDonTable.getColumnCount(); i++) {
+    hoaDonTable.setDefaultEditor(hoaDonTable.getColumnClass(i), new NonEditableCellEditor(new JTextField()));
+}
+
+// Tương tự cho chiTietHoaDonTable
+for (int i = 0; i < chiTietHoaDonTable.getColumnCount(); i++) {
+    chiTietHoaDonTable.setDefaultEditor(chiTietHoaDonTable.getColumnClass(i), new NonEditableCellEditor(new JTextField()));
+}
+
+
 
     }
 
     // Hàm hiển thị chi tiết hóa đơn khi nhấn nút "Xem hóa đơn"
-    private void hienThiChiTietHoaDon() {
-        int selectedRow = hoaDonTable.getSelectedRow();
-        if (selectedRow != -1) {
-            String maDSString = hoaDonTable.getValueAt(selectedRow, 0).toString();
-            try {
-                int maDS = Integer.parseInt(maDSString);
-                HoaDonController controller = new HoaDonController();
+   private void hienThiChiTietHoaDon() {
+    int selectedRow = hoaDonTable.getSelectedRow();
+    if (selectedRow != -1) {
+        String maDSString = hoaDonTable.getValueAt(selectedRow, 0).toString();
+        try {
+            int maDS = Integer.parseInt(maDSString);
+                    HoaDonController controller = new HoaDonController();
 
-                controller.updateChiTietHoaDonFromPhieuDatHang(maDS);
+                    controller.updateChiTietHoaDonFromPhieuDatHang( maDS);
 
-                ArrayList<HoaDonModel> danhSachChiTietHoaDon = controller.getChiTietHoaDonByMaDS(maDS);
-                displayDataInChiTietHoaDonTable(danhSachChiTietHoaDon);
-            } catch (NumberFormatException e) {
-                JOptionPane.showMessageDialog(null, "Mã đặt sân không hợp lệ.", "Lỗi", JOptionPane.ERROR_MESSAGE);
-            }
-        } else {
-            JOptionPane.showMessageDialog(null, "Vui lòng chọn một hóa đơn để xem chi tiết.", "Thông báo",
-                    JOptionPane.INFORMATION_MESSAGE);
+            ArrayList<HoaDonModel> danhSachChiTietHoaDon = controller.getChiTietHoaDonByMaDS(maDS);
+            displayDataInChiTietHoaDonTable(danhSachChiTietHoaDon);
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(null, "Mã đặt sân không hợp lệ.", "Lỗi", JOptionPane.ERROR_MESSAGE);
         }
+    } else {
+        JOptionPane.showMessageDialog(null, "Vui lòng chọn một hóa đơn để xem chi tiết.", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
     }
-    // Hàm kiểm tra xem có hàng khác trong bảng chitiethoadon mà có cùng MaDS và
-    // MaDV không
+} 
 
     // Hàm hiển thị chi tiết hóa đơn trong bảng
     private void displayDataInChiTietHoaDonTable(ArrayList<HoaDonModel> danhSachChiTietHoaDon) {
         DefaultTableModel model = (DefaultTableModel) chiTietHoaDonTable.getModel();
         model.setRowCount(0); // Xóa dữ liệu hiện tại trong bảng
         for (HoaDonModel hoaDon : danhSachChiTietHoaDon) {
-            model.addRow(new Object[] {
-                    hoaDon.getMaDS(), hoaDon.getMaSan(), hoaDon.getMaDV(), hoaDon.getMaKH(),
-                    hoaDon.getTenKH(), hoaDon.getSDT(), hoaDon.getTenSan(),
-                    hoaDon.getSoGioThue(), hoaDon.getGiaSan(), hoaDon.getTenDV(),
-                    hoaDon.getSoLuong(), hoaDon.getGia(),
-                    hoaDon.getTongTienSan(), hoaDon.getTongTienDV(), hoaDon.getTongTien(),
-                    hoaDon.getNgayLap(), hoaDon.getTrangThai()
+            model.addRow(new Object[]{
+                hoaDon.getMaDS(), hoaDon.getMaSan(), hoaDon.getMaDV(), hoaDon.getMaKH(),
+                hoaDon.getTenKH(), hoaDon.getSDT(), hoaDon.getTenSan(),
+hoaDon.getSoGioThue(), hoaDon.getGiaSan(), hoaDon.getTenDV(),
+                hoaDon.getSoLuong(), hoaDon.getGia(),
+                hoaDon.getTongTienSan(), hoaDon.getTongTienDV(), hoaDon.getTongTien(),
+                hoaDon.getNgayLap(), hoaDon.getTrangThai()
             });
         }
     }
+    
 
-    private void refreshHoaDonTable() {
-        // Lấy lại toàn bộ danh sách hóa đơn từ cơ sở dữ liệu
-        HoaDonController controller = new HoaDonController();
-        ArrayList<HoaDonModel> hoaDons = controller.getAllHoadons();
-
-        // Xóa toàn bộ dữ liệu hiện tại trong bảng
-        DefaultTableModel model = (DefaultTableModel) hoaDonTable.getModel();
-        model.setRowCount(0);
-
-        // Thêm các dòng mới từ danh sách hóa đơn mới
-        for (HoaDonModel hoaDon : hoaDons) {
-            model.addRow(new Object[] {
-                    hoaDon.getMaDS(), hoaDon.getMaKH(),
-                    hoaDon.getTongTienSan(), hoaDon.getTongTienDV(), hoaDon.getTongTien(),
-            });
-        }
+public class NonEditableCellEditor extends DefaultCellEditor {
+    public NonEditableCellEditor(JTextField textField) {
+        super(textField);
     }
 
-    public class NonEditableCellEditor extends DefaultCellEditor {
-        public NonEditableCellEditor(JTextField textField) {
-            super(textField);
-        }
-
-        @Override
-        public boolean isCellEditable(java.util.EventObject e) {
-            return false; // Không cho phép chỉnh sửa ô
-        }
+    @Override
+    public boolean isCellEditable(java.util.EventObject e) {
+        return false; // Không cho phép chỉnh sửa ô
     }
+}
+
 
     public static void main(String args[]) {
         HoaDonController controller = new HoaDonController();

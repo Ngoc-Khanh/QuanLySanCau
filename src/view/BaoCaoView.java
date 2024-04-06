@@ -42,7 +42,7 @@ public class BaoCaoView extends JFrame {
         jScrollPaneChiTietHoaDonTable.setPreferredSize(new Dimension(1500, 300));
         panel.add(jScrollPaneChiTietHoaDonTable);
 
-        statusFilterCbb = new JComboBox<>(new String[]{"Tất cả", "Chưa thanh toán", "Đã thanh toán"});
+        statusFilterCbb = new JComboBox<>(new String[]{"Tất cả", "chưa thanh toán", "Đã thanh toán"});
         panel.add(statusFilterCbb);
 
         JButton exportExcelBtn = new JButton("Xuất Excel");
@@ -126,7 +126,7 @@ public class BaoCaoView extends JFrame {
         if (status.equals("Tất cả")) {
             sorter.setRowFilter(null);
         } else {
-            String regex = (status.equals("Chưa thanh toán")) ? "Chưa thanh toán" : "Đã thanh toán";
+            String regex = (status.equals("chưa thanh toán")) ? "chưa thanh toán" : "Đã thanh toán";
             sorter.setRowFilter(RowFilter.regexFilter(regex, model.getColumnCount() - 1));
         }
     }
