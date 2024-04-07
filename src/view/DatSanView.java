@@ -44,9 +44,12 @@ public class DatSanView extends MainMenuView {
         JPanel inputPanel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
 
-        JLabel header = new JLabel("ĐẶT SÂN");
+        JLabel header = new JLabel("QUẢN LÝ");
         header.setHorizontalAlignment(JLabel.CENTER);
         header.setFont(new Font("Arial", Font.BOLD, 24));
+        JLabel header2 = new JLabel("ĐẶT SÂN");
+        header2.setHorizontalAlignment(JLabel.CENTER);
+        header2.setFont(new Font("Arial", Font.BOLD, 24));
         // header.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
         gbc.anchor = GridBagConstraints.WEST;
@@ -57,6 +60,11 @@ public class DatSanView extends MainMenuView {
         gbc.gridy = 0;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         inputPanel.add(header, gbc);
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        inputPanel.add(header2, gbc);
+
         // Label và TextField cho Mã DS
         gbc.gridx = 0;
         gbc.gridy = 1;

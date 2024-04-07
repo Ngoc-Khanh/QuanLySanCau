@@ -93,19 +93,23 @@ public class BaoCaoView extends JFrame {
 
                 // Số dòng trong table
                 int rowCount = tableModel.getRowCount();
+                int columnCount = tableModel.getColumnCount();
 
                 // Lặp qua từng dòng và ghi vào sheet
                 for (int i = 0; i < rowCount; i++) {
                     row = sheet.createRow(i + 1);
-                    for (int j = 0; j < tableModel.getColumnCount(); j++) {
-                        cell = row.createCell(j, CellType.STRING);
-                        cell.setCellValue(tableModel.getValueAt(i, j).toString());
+                    for (int j = 0; j < columnCount; j++) {
+                        Object value = tableModel.getValueAt(i, j); // Lấy giá trị của ô tại hàng i, cột j
+                        if (value != null) {
+                            cell = row.createCell(j, CellType.STRING);
+                            cell.setCellValue(value.toString());
+                        }
                     }
                 }
 
                 try {
                     // Ghi workbook vào file
-                    File file = new File("D:\\Danh_sach_Hoa_don.xlsx");
+                    File file = new File("D:\\danhsachhoadon.xlsx");
                     FileOutputStream fos = new FileOutputStream(file);
                     workbook.write(fos);
                     fos.close();
@@ -130,5 +134,4 @@ public class BaoCaoView extends JFrame {
             sorter.setRowFilter(RowFilter.regexFilter(regex, model.getColumnCount() - 1));
         }
     }
-
 }

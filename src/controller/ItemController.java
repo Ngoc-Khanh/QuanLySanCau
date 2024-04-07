@@ -1,6 +1,7 @@
-package model;
+package controller;
 
 import Database.ConnectDB;
+import model.ItemModel;
 
 import java.awt.event.ActionListener;
 import java.sql.Connection;

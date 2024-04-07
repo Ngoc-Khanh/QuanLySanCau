@@ -30,7 +30,7 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import model.ItemController;
+import controller.ItemController;
 import model.ItemModel;
 
 public class ItemView extends MainMenuView {
@@ -64,7 +64,7 @@ public class ItemView extends MainMenuView {
         UnitItemlbl = new JLabel("Đơn vị tính");
         PriceItemlbl = new JLabel("Giá");
         rowCountlbl = new JLabel("Số dòng:");
-        JLabel label = new JLabel("DỊCH VỤ");
+        JLabel label = new JLabel("QUẢN LÝ DỊCH VỤ");
         Font font = new Font(label.getFont().getName(), Font.BOLD, 25); // Đặt font chữ
         label.setFont(font); // Áp dụng font cho JLabel
 
@@ -146,17 +146,17 @@ public class ItemView extends MainMenuView {
         layout.putConstraint(SpringLayout.WEST, rowCountlbl, 65, SpringLayout.EAST, UnitItemstf);
         layout.putConstraint(SpringLayout.SOUTH, rowCountlbl, 20, SpringLayout.SOUTH, JScrollPaneTable);
 
-        layout.putConstraint(SpringLayout.WEST, Sortcbb, 315, SpringLayout.WEST, panel);
-        layout.putConstraint(SpringLayout.NORTH, Sortcbb, 20, SpringLayout.NORTH, panel);
+        layout.putConstraint(SpringLayout.WEST, Sortcbb, 375, SpringLayout.WEST, panel);
+        layout.putConstraint(SpringLayout.NORTH, Sortcbb, 50, SpringLayout.NORTH, panel);
 
         layout.putConstraint(SpringLayout.WEST, SearchItemtf, 155, SpringLayout.WEST, Sortcbb);
-        layout.putConstraint(SpringLayout.NORTH, SearchItemtf, 20, SpringLayout.NORTH, panel);
+        layout.putConstraint(SpringLayout.NORTH, SearchItemtf, 50, SpringLayout.NORTH, panel);
 
         layout.putConstraint(SpringLayout.WEST, SearchBtn, 210, SpringLayout.WEST, SearchItemtf);
-        layout.putConstraint(SpringLayout.NORTH, SearchBtn, 20, SpringLayout.NORTH, panel);
+        layout.putConstraint(SpringLayout.NORTH, SearchBtn, 50, SpringLayout.NORTH, panel);
 
-        layout.putConstraint(SpringLayout.WEST, JScrollPaneTable, 20, SpringLayout.WEST, panel);
-        layout.putConstraint(SpringLayout.NORTH, JScrollPaneTable, 50, SpringLayout.NORTH, panel);
+        layout.putConstraint(SpringLayout.WEST, JScrollPaneTable, 30, SpringLayout.WEST, panel);
+        layout.putConstraint(SpringLayout.NORTH, JScrollPaneTable, 80, SpringLayout.NORTH, panel);
         layout.putConstraint(SpringLayout.EAST, JScrollPaneTable, -19, SpringLayout.EAST, panel);
         // cot 1
         layout.putConstraint(SpringLayout.WEST, IdItemlbl, 80, SpringLayout.WEST, panel);
@@ -186,8 +186,7 @@ public class ItemView extends MainMenuView {
 
         // nut
         layout.putConstraint(SpringLayout.WEST, buttonPanel, 100, SpringLayout.WEST, panel);
-        layout.putConstraint(SpringLayout.SOUTH, buttonPanel, -20, SpringLayout.SOUTH, panel); // Đặt panel ở phía dưới
-                                                                                               // cùng của panel chính
+        layout.putConstraint(SpringLayout.SOUTH, buttonPanel, -80, SpringLayout.SOUTH, panel); // Đặt panel ở phía dưới
 
         DefaultTableModel model = (DefaultTableModel) ((JTable) JScrollPaneTable.getViewport().getView()).getModel();
         ItemController controller = new ItemController();
@@ -200,12 +199,14 @@ public class ItemView extends MainMenuView {
         mainPanel.add(menu, BorderLayout.WEST);
         mainPanel.add(panel, BorderLayout.CENTER);
 
+        SaveBtn.setEnabled(false);
+        ClearBtn.setEnabled(false);
+
         add(mainPanel);
         setTitle("Quản lý dịch vụ");
         setSize(1200, 800);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setVisible(true);
-
 
         controller.setButtonListener(AddBtn, new ActionListener() {
             @Override
@@ -266,11 +267,13 @@ public class ItemView extends MainMenuView {
                     UnitItemstf.setText(unitItem);
                     PriceItemstf.setText(String.valueOf(priceItem));
                     itemId = (int) Table.getValueAt(selectedRow, 0);
-                }AddBtn.setEnabled(false);
-                DeleteBtn.setEnabled(false);
-                ExportBtn.setEnabled(false);
-                
-            }  
+
+                    AddBtn.setEnabled(false);
+                    DeleteBtn.setEnabled(false);
+                    ExportBtn.setEnabled(false);
+                    SaveBtn.setEnabled(true);
+                }
+            }
         });
 
         controller.setButtonListener(SaveBtn, new ActionListener() {
@@ -311,14 +314,17 @@ public class ItemView extends MainMenuView {
                     listItem = controller.getItemList();
                     itemList(listItem);
                     clearFields();
+
+                    AddBtn.setEnabled(true);
+                    DeleteBtn.setEnabled(true);
+                    ExportBtn.setEnabled(true);
+                    SaveBtn.setEnabled(false);
+                    ClearBtn.setEnabled(false);
                 } catch (NumberFormatException ex) {
                     // Xử lý nếu có lỗi khi chuyển đổi dữ liệu về số nguyên
                     JOptionPane.showMessageDialog(null, "Vui lòng nhập giá trị số cho ô giá ");
                 }
                 updateRowCount();
-                AddBtn.setEnabled(true);
-                DeleteBtn.setEnabled(true);
-                ExportBtn.setEnabled(true);
             }
         });
 
@@ -370,8 +376,9 @@ public class ItemView extends MainMenuView {
         controller.setButtonListener(SearchBtn, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String keyword = SearchItemtf.getText().trim().toLowerCase(); // Lấy từ khóa tìm kiếm từ JTextField và loại bỏ dấu
-                                                                // cách thừa
+                String keyword = SearchItemtf.getText().trim().toLowerCase(); // Lấy từ khóa tìm kiếm từ JTextField và
+                                                                              // loại bỏ dấu
+                // cách thừa
 
                 // Tạo một danh sách tạm thời để lưu kết quả tìm kiếm
                 List<ItemModel> searchResult = new ArrayList<>();
@@ -455,7 +462,7 @@ public class ItemView extends MainMenuView {
                     }
                 }
 
-                try (FileOutputStream fos = new FileOutputStream("D://danhsachsanpham.xlsx")) {
+                try (FileOutputStream fos = new FileOutputStream("D://danhsachdichvu.xlsx")) {
                     workbook.write(fos);
                     JOptionPane.showMessageDialog(rootPane, "Excel Success!.File path: D://danhsachsanpham.xlsx");
                 } catch (Exception ex) {

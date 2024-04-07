@@ -371,9 +371,9 @@ public class DatSanController {
                 }
             }
 
-            try (FileOutputStream fos = new FileOutputStream("C://Users//Admin//OneDrive - tuyenquang.edu.vn//Study//javas//QuanLySanCau//src//Excel//danhsachdatsan.xlsx")) {
+            try (FileOutputStream fos = new FileOutputStream("src//Excel//danhsachdatsan.xlsx")) {
                 workbook.write(fos);
-                JOptionPane.showMessageDialog(null, "Excel Success!.File path: C://Users//Admin//OneDrive - tuyenquang.edu.vn//Study//javas//QuanLySanCau//src//Excel//danhsachdatsan.xlsx");
+                JOptionPane.showMessageDialog(null, "Excel Success!.File path: src//Excel//danhsachdatsan.xlsx");
             } catch (Exception ex) {
                 ex.printStackTrace();
                 JOptionPane.showMessageDialog(null, "An error occurred while exporting to Excel.");

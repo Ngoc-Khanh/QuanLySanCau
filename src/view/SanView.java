@@ -173,7 +173,7 @@ public class SanView extends MainMenuView {
         // JScrollPaneTable);
         //
         layout.putConstraint(SpringLayout.WEST, buttonPanel, 100, SpringLayout.WEST, panel);
-        layout.putConstraint(SpringLayout.SOUTH, buttonPanel, -20, SpringLayout.SOUTH, panel); // Đặt panel ở phía dưới
+        layout.putConstraint(SpringLayout.SOUTH, buttonPanel, -100, SpringLayout.SOUTH, panel); // Đặt panel ở phía dưới
                                                                                                // cùng của panel chính
 
         DefaultTableModel model = (DefaultTableModel) ((JTable) JScrollPaneTable.getViewport().getView()).getModel();
@@ -186,6 +186,8 @@ public class SanView extends MainMenuView {
         JPanel menu = super.menu();
         mainPanel.add(menu, BorderLayout.WEST);
         mainPanel.add(panel, BorderLayout.CENTER);
+        SaveBtn.setEnabled(false);
+        ClearBtn.setEnabled(false);
 
         add(mainPanel);
         setTitle("Quản lý sân");
@@ -286,7 +288,60 @@ public class SanView extends MainMenuView {
                     LoaiSantf.setText(LoaiSan); //
                     GiaSantf.setText(String.valueOf(GiaSan));
 
+                    AddBtn.setEnabled(false);
+                    DeleteBtn.setEnabled(false);
+                    ExportBtn.setEnabled(false);
+                    SaveBtn.setEnabled(true);
+
                     // sanMa= (int) Table.getValueAt(selectedRow, 0);
+                }
+            }
+        });
+
+        controller.setButtonListener(SaveBtn, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Kiểm tra xem người dùng đã nhập đầy đủ thông tin hay chưa
+                String TenSan = TenSantf.getText();
+                String LoaiSan = LoaiSantf.getText();
+                String GiaSanstr = GiaSantf.getText();
+                
+             if (TenSan.isEmpty() || LoaiSan.isEmpty() || GiaSanstr.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Bạn phải nhập đầy đủ thông tin", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            return; // Dừng việc thêm khách hàng và hiển thị thông báo lỗi
+        }
+
+                try {
+                    // Chuyển đổi dữ liệu về số nguyên
+                    Float GiaSan = Float.parseFloat(GiaSanstr);
+
+                    // Kiểm tra xem có dòng nào được chọn không
+                    int selectedRow = Table.getSelectedRow();
+                    if (selectedRow == -1) {
+                        JOptionPane.showMessageDialog(null, "Vui lòng chọn một dòng để chỉnh sửa.");
+                        return;
+                    }
+
+                    // Lấy ID của item được chọn
+                    int MaSan = (int) Table.getValueAt(selectedRow, 0);
+
+                    // Gọi phương thức trong controller để cập nhật thông tin của mục đã chọn
+                    SanModel s = new SanModel(MaSan, TenSan, LoaiSan, GiaSan);
+                    controller.updatesan(s);
+
+                    // Cập nhật lại dòng trong bảng sau khi lưu thành công
+                    listSan = controller.getSanList();
+                    sanList(listSan);
+                    clearFields();
+                    
+                    AddBtn.setEnabled(true);
+                    DeleteBtn.setEnabled(true);
+                    ExportBtn.setEnabled(true);
+                    SaveBtn.setEnabled(false);
+                    ClearBtn.setEnabled(false);
+                } catch (NumberFormatException ex) {
+                    // Xử lý nếu có lỗi khi chuyển đổi dữ liệu về số nguyên
+                    JOptionPane.showMessageDialog(null, "Vui lòng nhập giá trị số cho ô giá ");
                 }
             }
         });
@@ -322,76 +377,50 @@ public class SanView extends MainMenuView {
             @Override
             public void actionPerformed(ActionEvent e) {
                 XSSFWorkbook workbook = new XSSFWorkbook();
-                XSSFSheet sheet = workbook.createSheet("Bảng giá sân");
+                XSSFSheet sheet = workbook.createSheet("Bảng giá sân ");
                 XSSFRow row = null;
                 Cell cell = null;
+        
                 row = sheet.createRow(0);
-
+        
                 cell = row.createCell(0, CellType.STRING);
-                cell.setCellValue("MaSan");
-
+                cell.setCellValue("Mã sân");
+        
                 cell = row.createCell(1, CellType.STRING);
-                cell.setCellValue("TenSan");
-
+                cell.setCellValue("Tên sân");
+        
                 cell = row.createCell(2, CellType.STRING);
-                cell.setCellValue("LoaiSan");
-
+                cell.setCellValue("Loại sân");
+        
                 cell = row.createCell(3, CellType.STRING);
-                cell.setCellValue("GiaSan");
-
-                List<SanModel> list1 = new SanController().getSanList();
-                //
-                if (list1 != null) {
-                    FileOutputStream fos = null;
-                    try {
-                        int s = list1.size();
-                        for (int i = 0; i < s; i++) {
-                            SanModel s1 = list1.get(i);
-                            row = sheet.createRow(1 + i);
-
-                            cell = row.createCell(0, CellType.NUMERIC);
-                            cell.setCellValue(s1.getMaSan());
-
-                            cell = row.createCell(1, CellType.STRING);
-                            cell.setCellValue(s1.getTenSan());
-
-                            cell = row.createCell(2, CellType.STRING);
-                            cell.setCellValue(s1.getLoaiSan());
-
-                            cell = row.createCell(3, CellType.NUMERIC);
-                            cell.setCellValue(s1.getGiaSan());
-
+                cell.setCellValue("Giá sân");
+        
+                int rowCount = Table.getRowCount(); // Lấy số lượng hàng trên bảng
+                int columnCount = Table.getColumnCount(); // Lấy số lượng cột trên bảng
+        
+                // Lặp qua từng hàng của bảng
+                for (int i = 0; i < rowCount; i++) {
+                    row = sheet.createRow(i + 1); // Bắt đầu từ hàng 1, vì hàng 0 đã được sử dụng cho tiêu đề
+        
+                    // Lặp qua từng cột của hàng và thêm dữ liệu vào file Excel
+                    for (int j = 0; j < columnCount; j++) {
+                        Object value = Table.getValueAt(i, j); // Lấy giá trị của ô tại hàng i, cột j
+                        if (value != null) {
+                            cell = row.createCell(j, CellType.STRING);
+                            cell.setCellValue(value.toString());
                         }
-                        File f = new File("F:\\banggiasan.xlsx");
-                        fos = new FileOutputStream(f);
-                        workbook.write(fos);
-                        fos.close();
-                        JOptionPane.showMessageDialog(rootPane, "Excel Success!.File path: " + f.getPath());
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
                     }
-
+                }
+        
+                try (FileOutputStream fos = new FileOutputStream("D:\\banggiasan.xlsx")) {
+                    workbook.write(fos);
+                    JOptionPane.showMessageDialog(rootPane, "Excel Success!.File path: F:\\danhsachsan.xlsx");
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                    JOptionPane.showMessageDialog(rootPane, "An error occurred while exporting to Excel.");
                 }
             }
         });
-
-        // Sortcbb.addActionListener(new ActionListener() {
-        // @Override
-        // public void actionPerformed(ActionEvent e) {
-        // String selectedSortOption = (String) Sortcbb.getSelectedItem();
-        // switch (selectedSortOption) {
-        // case "Tăng dần theo giá":
-        // Collections.sort(listItem, Comparator.comparingDouble(Item::getPriceItem));
-        // break;
-        // case "Giảm dần theo giá":
-        // Collections.sort(listItem,
-        // Comparator.comparingDouble(Item::getPriceItem).reversed());
-        // break;
-        // }
-        // // Cập nhật hiển thị của bảng
-        // itemList(listItem);
-        // }
-        // });
 
     }
 

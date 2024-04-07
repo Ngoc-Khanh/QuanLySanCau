@@ -61,8 +61,7 @@ public class MainMenuView extends JFrame {
 
         // Logo
         JLabel logo = new JLabel();
-        ImageIcon originalImageIcon = new ImageIcon(
-                "C:\\Users\\Admin\\OneDrive - tuyenquang.edu.vn\\Study\\javas\\QuanLySanCau\\src\\img\\logo.jpg");
+        ImageIcon originalImageIcon = new ImageIcon("src\\img\\logo.jpg");
         Image originalImage = originalImageIcon.getImage();
         int scaledWidth = 200;
         int scaleHeight = 200;
@@ -71,11 +70,11 @@ public class MainMenuView extends JFrame {
         logo.setIcon(scaleImageIcon);
 
         // Set căn lề trái cho văn bản trong các buttons
-        btnDatSan.setHorizontalAlignment(SwingConstants.LEFT);
-        btnDichVu.setHorizontalAlignment(SwingConstants.LEFT);
-        btnKhachHang.setHorizontalAlignment(SwingConstants.LEFT);
-        btnSan.setHorizontalAlignment(SwingConstants.LEFT);
-        btnHoaDon.setHorizontalAlignment(SwingConstants.LEFT);
+        btnDatSan.setHorizontalAlignment(SwingConstants.CENTER);
+        btnDichVu.setHorizontalAlignment(SwingConstants.CENTER);
+        btnKhachHang.setHorizontalAlignment(SwingConstants.CENTER);
+        btnSan.setHorizontalAlignment(SwingConstants.CENTER);
+        btnHoaDon.setHorizontalAlignment(SwingConstants.CENTER);
 
         layout = new SpringLayout();
         panel = new JPanel(layout);
@@ -101,7 +100,7 @@ public class MainMenuView extends JFrame {
 
         layout.putConstraint(SpringLayout.NORTH, btnKhachHang, 300, SpringLayout.NORTH, panel);
         layout.putConstraint(SpringLayout.WEST, btnKhachHang, 0, SpringLayout.WEST, panel);
-        
+
         layout.putConstraint(SpringLayout.NORTH, btnSan, 350, SpringLayout.NORTH, panel);
         layout.putConstraint(SpringLayout.WEST, btnSan, 0, SpringLayout.WEST, panel);
 
